@@ -27,7 +27,6 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 
 	@Override
 	public void openView() {
-
 	}
 
 
