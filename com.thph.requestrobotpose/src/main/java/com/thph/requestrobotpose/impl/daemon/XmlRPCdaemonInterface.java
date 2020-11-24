@@ -9,7 +9,66 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class XmlRPCdaemonInterface {
+
+	private final XmlRpcClient client;
+
+	public XmlRPCdaemonInterface(String host, int port) {
+		XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+		config.setEnabledForExtensions(true);
+		try {
+			config.setServerURL(new URL("http://" + host + ":" + port + "/RPC2"));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		config.setConnectionTimeout(1000); // 1s
+		client = new XmlRpcClient();
+		client.setConfig(config);
+	}
+
+	public boolean isReachable() {
+		try {
+			client.execute("showPopup", new ArrayList<String>());
+			return true;
+		} catch (XmlRpcException e) {
+			return false;
+		}
+	}
 	
+	public String showPopup() throws XmlRpcException, UnknownResponseException {
+		Object result = null;
+		try {
+			result = client.execute("showPopup", new ArrayList<String>());
+		} catch (XmlRpcException e) {
+			e.printStackTrace();
+		}
+		return processString(result);
+	}
 	
+	public String cancelPopup() throws XmlRpcException, UnknownResponseException {
+		Object result = null;
+		try {
+			result = client.execute("cancelPopup", new ArrayList<String>());
+		} catch (XmlRpcException e) {
+			e.printStackTrace();
+		}
+		return processString(result);
+	}
+	
+	private boolean processBoolean(Object response) throws UnknownResponseException {
+		if (response instanceof Boolean) {
+			Boolean val = (Boolean) response;
+			return val.booleanValue();
+		} else {
+			throw new UnknownResponseException();
+		}
+	}
+
+	private String processString(Object response) throws UnknownResponseException {
+		if (response instanceof String) {
+			return (String) response;
+		} else {
+			throw new UnknownResponseException();
+		}
+	}
 
 }

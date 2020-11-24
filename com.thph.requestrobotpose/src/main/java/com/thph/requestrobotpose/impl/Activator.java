@@ -25,7 +25,7 @@ public class Activator implements BundleActivator {
 		bundleContext.registerService(SwingInstallationNodeService.class,myDaemonInstallationNodeService, null);
 		bundleContext.registerService(SwingProgramNodeService.class, new RequestProgramNodeService(), null);
 	}
-
+ 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		System.out.println("Activator says Goodbye Request Robot Pose!");

@@ -18,7 +18,7 @@ public class MyDaemonInstallationNodeService
 
 		this.myDaemonService = myDaemonService;
 	}
-
+ 
 	@Override
 	public void configureContribution(ContributionConfiguration configuration) {
 

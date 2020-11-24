@@ -33,7 +33,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		panel.add(this.createPopup());
 
 	}
-	
+	 
 
 	private Box createPopup() {
 		// build poup menu

@@ -1,7 +1,6 @@
 package com.thph.requestrobotpose.impl;
 
 
-import com.thph.requestrobotpose.impl.daemon.MyDaemonService;
 import com.ur.urcap.api.contribution.ProgramNodeContribution;
 import com.ur.urcap.api.contribution.program.ProgramAPIProvider;
 import com.ur.urcap.api.contribution.program.CreationContext;
@@ -27,7 +26,7 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 
 	@Override
 	public void openView() {
-	}
+	} 
 
 
 	@Override
@@ -50,6 +49,7 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	@Override
 	public void generateScript(ScriptWriter writer) {
 
+		
 	}
 
 }

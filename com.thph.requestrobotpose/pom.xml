@@ -10,7 +10,7 @@
 	<packaging>bundle</packaging>
 
 	<properties>
-
+ 
 		<!--********************************************************************-->
 		<!--   Note: Update this section with relevant meta data                -->
 		<!--         that comes along with your URCap                           -->
@@ -89,8 +89,8 @@
 							<goals>
 								<goal>manifest</goal>
 							</goals>
-					</execution>
-				</executions>
+					</execution> 
+				</executions> 
 				<configuration>
 					<instructions>
 						<!--********** DO NOT MODIFY THE ENTRIES OF THIS SECTION **********-->
@@ -103,7 +103,8 @@
 						<Bundle-Description>${urcap.description}</Bundle-Description>
 						<!--***************************************************************-->
 						<Import-Package>com.ur.urcap.api*,
-							*</Import-Package>
+							*,com.ur.style*;version="[1.0)"</Import-Package>
+							<Embed-Dependency>StyleGuide;scope=compile|runtime</Embed-Dependency>							
 					</instructions>
 				</configuration>
 			</plugin>
@@ -112,7 +113,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.1</version>
 				<executions>
-					<execution>
+				<!-- <execution>
 						<id>clean-daemon</id>
 						<phase>clean</phase>
 						<goals>
@@ -150,10 +151,10 @@
 						</goals>
 						<configuration>
 							<executable>cp</executable>
-							<commandlineArgs>daemon/HelloWorld src/main/resources/com/ur/urcap/examples/mydaemonswing/impl/daemon/</commandlineArgs>
+							<commandlineArgs>daemon/popupxmlrpc src/main/resources/daemon/</commandlineArgs>
 							<workingDirectory>.</workingDirectory>
 						</configuration>
-					</execution>
+					</execution>-->
 					<!-- generate URCap package after compiling -->
 					<execution>
 						<id>package-urcap</id>
@@ -184,6 +185,12 @@
 			<artifactId>api</artifactId>
 			<version>1.8.0</version>
 			<scope>provided</scope>
+		</dependency>
+	
+		<dependency>
+    		<groupId>com.ur</groupId>
+			<artifactId>StyleGuide</artifactId>
+    		<version>1.0</version>
 		</dependency>
 
 		<dependency>

@@ -22,7 +22,7 @@ public class RobotMotionRequester {
 		X_POSITIVE,
 		X_NEGATIVE
 	}
-	
+	 
 	
 	public void requestRobotMove(Axis pose_direction) {
 		

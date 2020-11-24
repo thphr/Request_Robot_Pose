@@ -16,7 +16,7 @@ public class ScriptCommand {
 	private final String postfix = "end\n";
 	
 	private String commandContent = "";
-	
+	 
 	/**
 	 * Create a new ScriptCommand
 	 */

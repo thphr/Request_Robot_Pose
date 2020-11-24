@@ -23,7 +23,7 @@ public class RequestProgramNodeService implements SwingProgramNodeService<Reques
 
 		configuration.setChildrenAllowed(false);
 	
-	}
+	} 
 
 	@Override
 	public String getTitle(Locale locale) {

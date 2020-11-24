@@ -15,10 +15,10 @@ public class MyDaemonService implements DaemonService {
 		this.daemonContribution = daemonContribution;
 		
 		try {
-			daemonContribution.installResource(new URL("file:com/ur/urcap/sample/XMLRPCmath/impl/daemon/"));
+			daemonContribution.installResource(new URL("file:daemon/"));
 		} catch (MalformedURLException e) {
 		}
-	}
+	} 
 
 	@Override
 	public URL getExecutable() {
