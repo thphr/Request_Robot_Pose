@@ -112,6 +112,48 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.1</version>
 				<executions>
+					<execution>
+						<id>clean-daemon</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>scons</executable>
+							<arguments>
+								<argument>-c</argument>
+							</arguments>
+							<workingDirectory>./daemon</workingDirectory>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>compile-daemon</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>scons</executable>
+							<arguments>
+								<argument>release=1</argument>
+							</arguments>
+							<workingDirectory>./daemon</workingDirectory>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>copy-daemon</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>cp</executable>
+							<commandlineArgs>daemon/HelloWorld src/main/resources/com/ur/urcap/examples/mydaemonswing/impl/daemon/</commandlineArgs>
+							<workingDirectory>.</workingDirectory>
+						</configuration>
+					</execution>
 					<!-- generate URCap package after compiling -->
 					<execution>
 						<id>package-urcap</id>
@@ -142,6 +184,48 @@
 			<artifactId>api</artifactId>
 			<version>1.8.0</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.xmlrpc</groupId>
+			<artifactId>xmlrpc-client</artifactId>
+			<version>3.1.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlrpc</groupId>
+			<artifactId>xmlrpc-common</artifactId>
+			<version>3.1.3.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.antlr</groupId>
+					<artifactId>stringtemplate</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.antlr</groupId>
+					<artifactId>antlr-runtime</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.ws.commons.util</groupId>
+			<artifactId>ws-commons-util</artifactId>
+			<version>1.0.2.0</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>xml-apis</artifactId>
+					<groupId>xml-apis</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.9</version>
 		</dependency>
 
 		<!-- test dependencies -->

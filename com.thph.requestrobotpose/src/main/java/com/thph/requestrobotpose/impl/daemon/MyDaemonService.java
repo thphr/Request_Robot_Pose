@@ -13,6 +13,7 @@ public class MyDaemonService implements DaemonService {
 	@Override
 	public void init(DaemonContribution daemon) {
 		this.daemonContribution = daemonContribution;
+		
 		try {
 			daemonContribution.installResource(new URL("file:com/ur/urcap/sample/XMLRPCmath/impl/daemon/"));
 		} catch (MalformedURLException e) {
@@ -22,7 +23,7 @@ public class MyDaemonService implements DaemonService {
 	@Override
 	public URL getExecutable() {
 		try {
-			return new URL("file:com/ur/urcap/sample/XMLRPCmath/impl/daemon/mathserver.py");
+			return new URL("file:daemon/popupxmlrpc.py");
 		} catch (MalformedURLException e) {
 			return null;
 		}

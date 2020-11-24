@@ -1,6 +1,7 @@
 package com.thph.requestrobotpose.impl;
 
 
+import com.thph.requestrobotpose.impl.daemon.MyDaemonService;
 import com.ur.urcap.api.contribution.ProgramNodeContribution;
 import com.ur.urcap.api.contribution.program.ProgramAPIProvider;
 import com.ur.urcap.api.contribution.program.CreationContext;
@@ -14,15 +15,14 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	private final ProgramAPI programAPI;
 	private final RequestProgramNodeView view;
 	private final DataModel model;
-
+	
 
 	public RequestProgramNodeContribution(ProgramAPIProvider apiProvider, RequestProgramNodeView view, DataModel model, CreationContext context) {
-
 	
 		this.programAPI = apiProvider.getProgramAPI();
 		this.view = view;
 		this.model = model;
-
+		
 	}
 
 	@Override
@@ -33,7 +33,6 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	@Override
 	public void closeView() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
