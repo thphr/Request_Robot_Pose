@@ -1,13 +1,11 @@
 import xmlrpclib
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 
-def showPopup(request):
-    if(request == True):
-        print "Show popup"
+def showPopup():
+    print "Show popup"
 
-def cancelPopup(request):
-    if(request == True):
-        print "Cancel popup"
+def cancelPopup():
+    print "Cancel popup"
 
 server = SimpleXMLRPCServer(("", 33000), allow_none=True)
 print "Listening on port 33000..."
