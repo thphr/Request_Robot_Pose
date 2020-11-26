@@ -27,7 +27,7 @@ public class XmlRPCdaemonInterface {
 
 	public boolean isReachable() {
 		try {
-			client.execute("showPopup", new ArrayList<String>());
+			client.execute("showpopup", new ArrayList<String>());
 			return true;
 		} catch (XmlRpcException e) {
 			return false;
@@ -35,22 +35,12 @@ public class XmlRPCdaemonInterface {
 	}
 	
 	public String showPopup() throws XmlRpcException, UnknownResponseException {
-		Object result = null;
-		try {
-			result = client.execute("showPopup", new ArrayList<String>());
-		} catch (XmlRpcException e) {
-			e.printStackTrace();
-		}
+		Object result  = client.execute("showpopup", new ArrayList<String>());
 		return processString(result);
 	}
 	
 	public String cancelPopup() throws XmlRpcException, UnknownResponseException {
-		Object result = null;
-		try {
-			result = client.execute("cancelPopup", new ArrayList<String>());
-		} catch (XmlRpcException e) {
-			e.printStackTrace();
-		}
+		Object result = client.execute("cancelpopup", new ArrayList<String>());
 		return processString(result);
 	}
 	

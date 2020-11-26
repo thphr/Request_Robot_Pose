@@ -7,6 +7,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.ur.style.URSpacingSize;
 import com.ur.style.components.URButtons;
@@ -31,17 +33,36 @@ public class MyDaemonInstallationNodeView implements SwingInstallationNodeView<M
 	@Override
 	public void buildUI(JPanel panel, MyDaemonInstallationNodeContribution contribution) {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(createStatusLabel());
+		panel.add(createStatusLabel(contribution));
 	} 
 	
 	
-	private Box createStatusLabel() {
+	private Box createStatusLabel(final MyDaemonInstallationNodeContribution contribution) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
 		this.startButton = urButtons.getLargeButtonEnabled("Start Daemon", 200);
 		this.stopButton = urButtons.getLargeButtonEnabled("Stop Daemon", 200);
 		this.statusLabel = new JLabel("My Daemon status");
+		
+		
+		startButton.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				contribution.onStartClick();
+			}
+		});
+		
+		
+		stopButton.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				contribution.onStopClick();
+			}
+		});
+		
 		
 		box.add(startButton);
 		box.add(urSpacing.createHorizontalSpacing());
