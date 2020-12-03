@@ -6,6 +6,7 @@ import com.thph.requestrobotpose.impl.script.ScriptSender;
 public class RobotMotionRequester {
 	
 	private String acceleration = "0.5";
+	private String stopAcceleration = "20";
 	private String time = "0.5";
 	private String tool_speed_x_positive = "[1.0,0.0,0.0,0.0,0.0,0.0]";
 	private String tool_speed_x_negative = "[-1.0,0.0,0.0,0.0,0.0,0.0]";
@@ -52,12 +53,22 @@ public class RobotMotionRequester {
 		
 	}
 	
+	public void stopRobotMove() {
+		ScriptSender sender = new ScriptSender();
+
+		ScriptCommand senderCommand = new ScriptCommand("SenderCommand");
+		senderCommand.setAsSecondaryProgram();
+		senderCommand.appendLine("stopl("+ stopAcceleration+")");
+		
+		sender.sendScriptCommand(senderCommand);
+	}
+	
 	private void moveRobot(Axis pose_direction, String tool_speed, String acceleration, String time) {
 		
 		ScriptSender sender = new ScriptSender();
 
 		ScriptCommand senderCommand = new ScriptCommand("SenderCommand");
-		senderCommand.setAsSecondaryProgram();
+		senderCommand.setAsPrimaryProgram();
 		senderCommand.appendLine("speedl("+ tool_speed +","+ acceleration+","+time+")");
 		
 		sender.sendScriptCommand(senderCommand);

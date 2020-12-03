@@ -1,5 +1,8 @@
 package com.thph.requestrobotpose.impl.script;
 
+import com.thph.requestrobotpose.impl.RobotMotionRequester;
+import com.thph.requestrobotpose.impl.RobotMotionRequester.Axis;
+
 public class InterfaceTester {
 
 	/**
@@ -17,15 +20,19 @@ public class InterfaceTester {
 		/** 
 		 * Testing Sender
 		 */
-		ScriptSender sender = new ScriptSender();
-
-		ScriptCommand senderCommand = new ScriptCommand("SenderCommand");
-		senderCommand.setAsPrimaryProgram();
-//		senderCommand.appendLine("textmsg(\"value=\",3)");
-//		senderCommand.appendLine("speedl([0.0,0.0,1.0,0.0,0.0,0.0], 0.5,1.0)");
-		senderCommand.appendLine("speedl([0.0,0.0,-1.0,0.0,0.0,0.0], 0.5,1.0)");
 		
-		sender.sendScriptCommand(senderCommand);
+		RobotMotionRequester requester = new RobotMotionRequester();
+		requester.requestRobotMove(Axis.Z_POSITIVE);
+		
+//		ScriptSender sender = new ScriptSender();
+//
+//		ScriptCommand senderCommand = new ScriptCommand("SenderCommand");
+//		senderCommand.setAsPrimaryProgram();
+////		senderCommand.appendLine("textmsg(\"value=\",3)");
+////		senderCommand.appendLine("speedl([0.0,0.0,1.0,0.0,0.0,0.0], 0.5,1.0)");
+//		senderCommand.appendLine("speedl([0.0,0.0,-1.0,0.0,0.0,0.0], 0.5,1.0)");
+//		
+//		sender.sendScriptCommand(senderCommand);
 
 //		/**
 //		 * Testing Exporter

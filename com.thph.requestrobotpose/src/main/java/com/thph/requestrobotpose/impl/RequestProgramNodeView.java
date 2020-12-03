@@ -1,6 +1,7 @@
 package com.thph.requestrobotpose.impl;
 
 
+import com.thph.requestrobotpose.impl.RobotMotionRequester.Axis;
 import com.ur.style.URSpacingSize;
 import com.ur.style.components.URButtons;
 import com.ur.style.components.URSpacing;
@@ -9,23 +10,24 @@ import com.ur.urcap.api.contribution.ContributionProvider;
 import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeView;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
+import javax.swing.ButtonModel;
 import javax.swing.JButton;
-import javax.swing.JMenuItem;
 
 public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgramNodeContribution> {
 	
 	 final JPopupMenu popup = new JPopupMenu();
+	 
+	 //Initiate command sender.
+	 final RobotMotionRequester robotMotionRequester = new RobotMotionRequester();
 	 
 	 //Tempoary button for triggering the popup.
 	 final JButton buttontest = new JButton();
@@ -64,9 +66,14 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		//Create a jpanel with a titel.
+		//Create a jpanel with a title.
         JPanel jpanel = previewUI.AddComponentsToUI("Popup");
         jpanel.add(createButtons());
+        
+        //Calls the button handler.
+        this.handleButtonEvents();
+        
+        //add the panel with buttons to the popup.
         popup.add(jpanel);
         
         buttontest.addActionListener(new ActionListener() {
@@ -132,8 +139,47 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		return box;
 	}
 	
-	private void buttonEventHandler() {
+	
+	/**
+	 * Create handlers for buttons.
+	 */
+	private void handleButtonEvents() {
 		
+		this.createChangeListener(buttonZNegative, Axis.Z_NEGATIVE);
+		this.createChangeListener(buttonZPositive, Axis.Z_POSITIVE);
+		this.createChangeListener(buttonYNegative, Axis.Y_NEGATIVE);
+		this.createChangeListener(buttonYPositive, Axis.Y_POSITIVE);
+		this.createChangeListener(buttonXNegative, Axis.X_NEGATIVE);
+		this.createChangeListener(buttonXPositive, Axis.X_POSITIVE);
+		
+		this.buttonOK.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				robotMotionRequester.stopRobotMove();
+			}
+		});
+		
+	}
+	
+	/**
+	 * Method for creating change listener for buttons.
+	 * @param button
+	 * @param IONumber
+	 */
+	private void createChangeListener(final JButton button, final Axis axis) {
+		button.getModel().addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+
+				ButtonModel model = (ButtonModel) e.getSource();
+
+				if (model.isEnabled()) {
+					robotMotionRequester.requestRobotMove(axis);
+				}
+
+			}
+		});
 	}
 
     /**
