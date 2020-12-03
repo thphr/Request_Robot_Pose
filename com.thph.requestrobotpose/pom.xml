@@ -115,7 +115,7 @@
 				<executions>
 				<!-- <execution>
 						<id>clean-daemon</id>
-						<phase>clean</phase>
+						<phase>clean</phase>    
 						<goals>
 							<goal>exec</goal>
 						</goals>
@@ -132,7 +132,7 @@
 						<id>compile-daemon</id>
 						<phase>compile</phase>
 						<goals>
-							<goal>exec</goal>
+							<goal>exec</goal> 
 						</goals>
 						<configuration>
 							<executable>scons</executable>
@@ -141,17 +141,17 @@
 							</arguments>
 							<workingDirectory>./daemon</workingDirectory>
 						</configuration>
-					</execution>
+					</execution> 
 
-					<execution>
+					<execution> 
 						<id>copy-daemon</id>
 						<phase>compile</phase>
 						<goals>
 							<goal>exec</goal>
 						</goals>
-						<configuration>
+						<configuration> 
 							<executable>cp</executable>
-							<commandlineArgs>com/thph/requestrobotpose/impl/daemon/popupxmlrpc src/main/resources/com/thph/requestrobotpose/impl/daemon/</commandlineArgs>
+							<commandlineArgs>daemon/popupxmlrpc src/main/resources/com/thph/requestrobotpose/impl/daemon/</commandlineArgs>
 							<workingDirectory>.</workingDirectory>
 						</configuration>
 					</execution> -->

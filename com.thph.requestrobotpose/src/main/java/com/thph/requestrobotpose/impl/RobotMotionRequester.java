@@ -8,12 +8,12 @@ public class RobotMotionRequester {
 	private String acceleration = "0.5";
 	private String stopAcceleration = "20";
 	private String time = "0.5";
-	private String tool_speed_x_positive = "[1.0,0.0,0.0,0.0,0.0,0.0]";
-	private String tool_speed_x_negative = "[-1.0,0.0,0.0,0.0,0.0,0.0]";
-	private String tool_speed_y_positive = "[0.0,1.0,0.0,0.0,0.0,0.0]";
-	private String tool_speed_y_negative = "[0.0,-1.0,0.0,0.0,0.0,0.0]";
-	private String tool_speed_z_positive = "[0.0,0.0,1.0,0.0,0.0,0.0]";
-	private String tool_speed_z_negative = "[0.0,0.0,-1.0,0.0,0.0,0.0]";
+	private String tool_speed_x_positive = "[0.3,0.0,0.0,0.0,0.0,0.0]";
+	private String tool_speed_x_negative = "[-0.3,0.0,0.0,0.0,0.0,0.0]";
+	private String tool_speed_y_positive = "[0.0,0.3,0.0,0.0,0.0,0.0]";
+	private String tool_speed_y_negative = "[0.0,-0.3,0.0,0.0,0.0,0.0]";
+	private String tool_speed_z_positive = "[0.0,0.0,0.3,0.0,0.0,0.0]";
+	private String tool_speed_z_negative = "[0.0,0.0,-0.3,0.0,0.0,0.0]";
 
 	public enum Axis{
 		Z_POSITIVE,
@@ -57,7 +57,7 @@ public class RobotMotionRequester {
 		ScriptSender sender = new ScriptSender();
 
 		ScriptCommand senderCommand = new ScriptCommand("SenderCommand");
-		senderCommand.setAsSecondaryProgram();
+		senderCommand.setAsPrimaryProgram();
 		senderCommand.appendLine("stopl("+ stopAcceleration+")");
 		
 		sender.sendScriptCommand(senderCommand);
@@ -68,7 +68,7 @@ public class RobotMotionRequester {
 		ScriptSender sender = new ScriptSender();
 
 		ScriptCommand senderCommand = new ScriptCommand("SenderCommand");
-		senderCommand.setAsPrimaryProgram();
+		senderCommand.setAsPrimaryProgram();  
 		senderCommand.appendLine("speedl("+ tool_speed +","+ acceleration+","+time+")");
 		
 		sender.sendScriptCommand(senderCommand);

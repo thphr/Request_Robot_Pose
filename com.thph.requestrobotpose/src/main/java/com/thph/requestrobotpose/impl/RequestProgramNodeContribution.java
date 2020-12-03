@@ -34,18 +34,15 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 
 	@Override
 	public void closeView() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public String getTitle() {
-		// TODO Auto-generated method stub
 		return "Request Robot Pose";
 	}
 
 	@Override
 	public boolean isDefined() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
@@ -53,7 +50,9 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	public void generateScript(ScriptWriter writer) {
 //		writer.assign("mydaemon_showpopup", getInstallation().getXMLRPCVariable() + ".showpopup");
 //		writer.assign("mydaemon_cancel", getInstallation().getXMLRPCVariable() + ".cancelpopup()");
+		writer.appendLine("def myprogram():");
 		writer.appendLine("# Connect to XMLRPC  server" + "mydaemon_showpopup");
+		writer.appendLine("end");
 		
 	}
 	

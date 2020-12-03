@@ -54,7 +54,6 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		panel.add(this.createPopup(panel));
 
 	}
-	
 	 
 
 	/**
