@@ -144,12 +144,12 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 */
 	private void handleButtonEvents() {
 		
-		this.createChangeListener(buttonZNegative, Axis.Z_NEGATIVE);
-		this.createChangeListener(buttonZPositive, Axis.Z_POSITIVE);
-		this.createChangeListener(buttonYNegative, Axis.Y_NEGATIVE);
-		this.createChangeListener(buttonYPositive, Axis.Y_POSITIVE);
-		this.createChangeListener(buttonXNegative, Axis.X_NEGATIVE);
-		this.createChangeListener(buttonXPositive, Axis.X_POSITIVE);
+		this.createChangeListener(buttonZNegative, Axis.Z_Axis, -0.3);
+		this.createChangeListener(buttonZPositive, Axis.Z_Axis, 0.3);
+		this.createChangeListener(buttonYNegative, Axis.Y_Axis, -0.3);
+		this.createChangeListener(buttonYPositive, Axis.Y_Axis, 0.3);
+		this.createChangeListener(buttonXNegative, Axis.X_Axis, -0.3);
+		this.createChangeListener(buttonXPositive, Axis.X_Axis, 0.3);
 		
 		this.buttonOK.addChangeListener(new ChangeListener() {
 			@Override
@@ -165,7 +165,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 * @param button
 	 * @param IONumber
 	 */
-	private void createChangeListener(final JButton button, final Axis axis) {
+	private void createChangeListener(final JButton button, final Axis axis, final double speed) {
 		button.getModel().addChangeListener(new ChangeListener() {
 
 			@Override
@@ -174,7 +174,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 				ButtonModel model = (ButtonModel) e.getSource();
 
 				if (model.isEnabled()) {
-					robotMotionRequester.requestRobotMove(axis);
+					robotMotionRequester.requestRobotMove(axis,speed);
 				}
 
 			}

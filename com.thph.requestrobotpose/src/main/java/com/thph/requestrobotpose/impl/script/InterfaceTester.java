@@ -22,7 +22,7 @@ public class InterfaceTester {
 		 */
 		
 		RobotMotionRequester requester = new RobotMotionRequester();
-		requester.requestRobotMove(Axis.Z_POSITIVE);
+		requester.requestRobotMove(Axis.Z_Axis, 0.3);
 		
 //		ScriptSender sender = new ScriptSender();
 //

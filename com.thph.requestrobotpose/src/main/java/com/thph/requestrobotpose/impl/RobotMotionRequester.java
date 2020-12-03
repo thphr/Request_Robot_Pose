@@ -1,55 +1,63 @@
 package com.thph.requestrobotpose.impl;
 
+import java.util.Arrays;
+import java.util.HashMap;
+
 import com.thph.requestrobotpose.impl.script.ScriptCommand;
 import com.thph.requestrobotpose.impl.script.ScriptSender;
 
 public class RobotMotionRequester {
 	
-	private String acceleration = "0.5";
-	private String stopAcceleration = "20";
-	private String time = "0.5";
-	private String tool_speed_x_positive = "[0.3,0.0,0.0,0.0,0.0,0.0]";
-	private String tool_speed_x_negative = "[-0.3,0.0,0.0,0.0,0.0,0.0]";
-	private String tool_speed_y_positive = "[0.0,0.3,0.0,0.0,0.0,0.0]";
-	private String tool_speed_y_negative = "[0.0,-0.3,0.0,0.0,0.0,0.0]";
-	private String tool_speed_z_positive = "[0.0,0.0,0.3,0.0,0.0,0.0]";
-	private String tool_speed_z_negative = "[0.0,0.0,-0.3,0.0,0.0,0.0]";
+	private double acceleration;
+	private double stopAcceleration;
+	private double funcionReturnTime;
 
+	private double[] tool_speed_map;
+	private HashMap<Axis, Integer> AxisToToolMap = new HashMap<Axis, Integer>();
+	
+	
 	public enum Axis{
-		Z_POSITIVE,
-		Z_NEGATIVE,
-		Y_POSITIVE,
-		Y_NEGATIVE,
-		X_POSITIVE,
-		X_NEGATIVE
+		Z_Axis,
+		Y_Axis,
+		X_Axis
+	}
+	
+	
+	public RobotMotionRequester() {
+		this.resetToolmap();
+		setupAxisToToolMap();
+		setAcceleration(0.5);
+		setStopAcceleration(20.0);
+		setFuncionReturnTime(0.5);
+		
+	}
+	
+	private void setupAxisToToolMap() {
+		AxisToToolMap.put(Axis.Z_Axis, 2);
+	
+		AxisToToolMap.put(Axis.X_Axis, 0);
+	
+		AxisToToolMap.put(Axis.Y_Axis, 1);		
+	}
+	
+	private void resetToolmap() {
+		tool_speed_map = new double[] {0.0,0.0,0.0,0.0,0.0,0.0};
 	}
 	 
+	private void buildRobotMoveRequest(Axis axis, double speed) {
+		tool_speed_map[AxisToToolMap.get(axis)] = speed;
+	}
 	
-	public void requestRobotMove(Axis pose_direction) {
+	private String ConvertToolMapToString() {
+		return Arrays.toString(tool_speed_map);
+	}
+	
+	
+	public void requestRobotMove(Axis axis, double speed) {
+		this.resetToolmap();
+		buildRobotMoveRequest(axis, speed);
+		moveRobot(ConvertToolMapToString(), getAcceleration(), getFuncionReturnTime());
 		
-		switch(pose_direction) {
-		case X_POSITIVE:
-			moveRobot(pose_direction, tool_speed_x_positive, acceleration, time);
-			break;
-		case X_NEGATIVE:
-			moveRobot(pose_direction, tool_speed_x_negative, acceleration, time);
-			break;
-		case Y_POSITIVE:
-			moveRobot(pose_direction, tool_speed_y_positive, acceleration, time);
-			break;
-		case Y_NEGATIVE:
-			moveRobot(pose_direction, tool_speed_y_negative, acceleration, time);
-			break;
-		case Z_POSITIVE:
-			moveRobot(pose_direction, tool_speed_z_positive, acceleration, time);
-			break;
-		case Z_NEGATIVE:
-			moveRobot(pose_direction, tool_speed_z_negative, acceleration, time);
-			break;
-		default:
-			moveRobot(pose_direction, tool_speed_x_positive, acceleration, time);
-			break;
-		}
 		
 	}
 	
@@ -58,12 +66,12 @@ public class RobotMotionRequester {
 
 		ScriptCommand senderCommand = new ScriptCommand("SenderCommand");
 		senderCommand.setAsPrimaryProgram();
-		senderCommand.appendLine("stopl("+ stopAcceleration+")");
+		senderCommand.appendLine("stopl("+ getStopAcceleration()+")");
 		
 		sender.sendScriptCommand(senderCommand);
 	}
 	
-	private void moveRobot(Axis pose_direction, String tool_speed, String acceleration, String time) {
+	private void moveRobot(String tool_speed, double acceleration, double time) {
 		
 		ScriptSender sender = new ScriptSender();
 
@@ -73,4 +81,29 @@ public class RobotMotionRequester {
 		
 		sender.sendScriptCommand(senderCommand);
 	}
+
+	public double getStopAcceleration() {
+		return stopAcceleration;
+	}
+
+	public void setStopAcceleration(double stopAcceleration) {
+		this.stopAcceleration = stopAcceleration;
+	}
+
+	public double getAcceleration() {
+		return acceleration;
+	}
+
+	public void setAcceleration(double acceleration) {
+		this.acceleration = acceleration;
+	}
+
+	public double getFuncionReturnTime() {
+		return funcionReturnTime;
+	}
+
+	public void setFuncionReturnTime(double funcionReturnTime) {
+		this.funcionReturnTime = funcionReturnTime;
+	}
+
 }

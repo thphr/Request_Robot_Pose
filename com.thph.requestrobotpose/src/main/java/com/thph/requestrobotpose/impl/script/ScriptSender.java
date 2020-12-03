@@ -15,10 +15,10 @@ public class ScriptSender {
 	// IP of the robot 
 	private final String TCP_IP;
 	// Port for secondary client
-//	private final int TCP_port = 30002;
+	private final int TCP_port = 30002;
 	
 	//Port for primary client
-	private final int TCP_port= 30001;
+//	private final int TCP_port= 30001;
 	
 	/**
 	 * Default constructor, using localhost IP (127.0.0.1)
