@@ -37,10 +37,12 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 URSpacingSize urSpacingSize = new URSpacingSize();
 	 
 	 //Create buttons
-	 JButton buttonUP = urButtons.getSmallButtonEnabled("UP", 100);
-	 JButton buttonDOWN = urButtons.getSmallButtonEnabled("DOWN", 100);
-	 JButton buttonLEFT = urButtons.getSmallButtonEnabled("LEFT", 100);
-	 JButton buttonRIGHT = urButtons.getSmallButtonEnabled("RIGHT", 100);
+	 JButton buttonZNegative = urButtons.getSmallButtonEnabled("Z-", 100);
+	 JButton buttonZPositive = urButtons.getSmallButtonEnabled("Z+", 100);
+	 JButton buttonXNegative = urButtons.getSmallButtonEnabled("X-", 100);
+	 JButton buttonXPositive = urButtons.getSmallButtonEnabled("X+", 100);
+	 JButton buttonYPositive = urButtons.getSmallButtonEnabled("Y+", 100);
+	 JButton buttonYNegative = urButtons.getSmallButtonEnabled("Y-", 100);
 	 JButton buttonOK= urButtons.getSmallButtonEnabled("OK", 100);
 	 
 
@@ -48,7 +50,6 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	public void buildUI(JPanel panel, ContributionProvider<RequestProgramNodeContribution> provider) {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.add(this.createPopup(panel));
-		
 
 	}
 	
@@ -72,7 +73,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				popup.show(panel,0,0);
+				popup.show(panel,panel.getWidth()/4,0);
 			}
 		});
         
@@ -91,36 +92,48 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		Box box = Box.createVerticalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
-		Box boxTOP = Box.createHorizontalBox();
+		Box boxXNegative = Box.createHorizontalBox();
 		
-		Box boxBottom = Box.createHorizontalBox();
+		Box boxXPostive = Box.createHorizontalBox();
 		
-		Box boxHorizontal = Box.createHorizontalBox();
+		Box boxZ = Box.createHorizontalBox();
 		
-		Box boxEnd = Box.createHorizontalBox();
+		Box boxY = Box.createHorizontalBox();
 		
-		boxTOP.add(createCustomizedHorizontalSpacing(1));
-		boxTOP.add(buttonUP);
+		Box boxSTOP = Box.createHorizontalBox();
 		
-		boxBottom.add(createCustomizedHorizontalSpacing(1));
-		boxBottom.add(buttonDOWN);
+		boxZ.add(buttonZPositive);
+		boxZ.add(createCustomizedHorizontalSpacing(100));
+		boxZ.add(buttonZNegative);
 		
-		boxEnd.add(createCustomizedHorizontalSpacing(200));
-		boxEnd.add(buttonOK);
+		boxXNegative.add(createCustomizedHorizontalSpacing(1));
+		boxXNegative.add(buttonXNegative);
 		
-		boxHorizontal.add(buttonLEFT);
-		boxHorizontal.add(createCustomizedHorizontalSpacing(100));
-		boxHorizontal.add(buttonRIGHT);
+		boxXPostive.add(createCustomizedHorizontalSpacing(1));
+		boxXPostive.add(buttonXPositive);
 		
-		box.add(boxTOP);
+		boxSTOP.add(createCustomizedHorizontalSpacing(200));
+		boxSTOP.add(buttonOK);
+		
+		boxY.add(buttonYNegative);
+		boxY.add(createCustomizedHorizontalSpacing(100));
+		boxY.add(buttonYPositive);
+		
+		box.add(boxZ);
 		box.add(urSpacing.createVerticalSpacing(50));
-		box.add(boxHorizontal);
+		box.add(boxXNegative);
 		box.add(urSpacing.createVerticalSpacing(50));
-		box.add(boxBottom);
-		box.add(urSpacing.createVerticalSpacing(100));
-		box.add(boxEnd);
+		box.add(boxY);
+		box.add(urSpacing.createVerticalSpacing(50));
+		box.add(boxXPostive);
+		box.add(urSpacing.createVerticalSpacing(50));
+		box.add(boxSTOP);
 		
 		return box;
+	}
+	
+	private void buttonEventHandler() {
+		
 	}
 
     /**

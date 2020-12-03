@@ -57,7 +57,7 @@ public class RobotMotionRequester {
 		ScriptSender sender = new ScriptSender();
 
 		ScriptCommand senderCommand = new ScriptCommand("SenderCommand");
-		senderCommand.setAsPrimaryProgram();
+		senderCommand.setAsSecondaryProgram();
 		senderCommand.appendLine("speedl("+ tool_speed +","+ acceleration+","+time+")");
 		
 		sender.sendScriptCommand(senderCommand);
