@@ -29,7 +29,6 @@ public class RobotMotionRequester {
 		setAcceleration(0.5);
 		setStopAcceleration(20.0);
 		setFuncionReturnTime(0.5);
-		
 	}
 	
 	private void setupAxisToToolMap() {

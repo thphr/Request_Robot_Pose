@@ -64,9 +64,7 @@ public class MyDaemonInstallationNodeContribution implements InstallationNodeCon
 	public void generateScript(ScriptWriter writer) {
 //		if(isDaemonEnabled()){
 			writer.appendLine("# Connect to XMLRPC server");
-			writer.assign(XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:" + PORT + "/RPC2\")");
-			// Apply the settings to the daemon on program start in the Installation pre-amble
-			writer.appendLine(XMLRPC_VARIABLE + ".showpopup");
+			writer.assign(XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:40405/RPC2\")");
 //		}
 
 	}
@@ -131,7 +129,6 @@ public class MyDaemonInstallationNodeContribution implements InstallationNodeCon
 					try {
 						pauseTimer = true;
 						awaitDaemonRunning(5000);
-//						xmlRPCdaemonInterface.showPopup();
 					} catch (Exception e) {
 						System.err.println("Could not set the title in the daemon process.");
 					} finally {

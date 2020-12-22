@@ -26,6 +26,8 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	
 	 final JPopupMenu popup = new JPopupMenu();
 	 
+	 private JPanel programnnodeViewPanel;
+	 
 	 //Initiate command sender.
 	 final RobotMotionRequester robotMotionRequester = new RobotMotionRequester();
 	 
@@ -50,12 +52,18 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 	@Override
 	public void buildUI(JPanel panel, ContributionProvider<RequestProgramNodeContribution> provider) {
+		this.setProgramnnodeViewPanel(panel);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.add(this.createPopup(panel));
+		
 
 	}
+	
+	public void openPopopView(JPanel panel) {
+		popup.show(panel,panel.getWidth()/4,0);
+	}
 	 
-
+	
 	/**
 	 * create a popup on the programnode JPanel x,y(0,0).
 	 * @param panel
@@ -88,6 +96,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
         
         return box;
 	}
+	
 	
 	
 	/**
@@ -155,6 +164,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				robotMotionRequester.stopRobotMove();
+				popup.setVisible(false);
 			}
 		});
 		
@@ -188,6 +198,16 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
      */
 	private Component createCustomizedHorizontalSpacing(int spacesize) {
 		return Box.createRigidArea(new Dimension(spacesize, 0));
+	}
+
+
+	public JPanel getProgramnnodeViewPanel() {
+		return programnnodeViewPanel;
+	}
+
+
+	private void setProgramnnodeViewPanel(JPanel programnnodeViewPanel) {
+		this.programnnodeViewPanel = programnnodeViewPanel;
 	}
 
 
