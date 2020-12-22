@@ -2,6 +2,7 @@ package com.thph.requestrobotpose.impl;
 
 
 import com.thph.requestrobotpose.impl.RobotMotionRequester.Axis;
+import com.thph.requestrobotpose.impl.daemon.UnknownResponseException;
 import com.ur.style.URSpacingSize;
 import com.ur.style.components.URButtons;
 import com.ur.style.components.URSpacing;
@@ -12,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import org.apache.xmlrpc.XmlRpcException;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -54,7 +57,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	public void buildUI(JPanel panel, ContributionProvider<RequestProgramNodeContribution> provider) {
 		this.setProgramnnodeViewPanel(panel);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(this.createPopup(panel));
+		panel.add(this.createPopup(panel,provider));
 		
 
 	}
@@ -69,7 +72,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 * @param panel
 	 * @return
 	 */
-	private Box createPopup(final JPanel panel) {
+	private Box createPopup(final JPanel panel, ContributionProvider<RequestProgramNodeContribution> provider) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -78,7 +81,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
         jpanel.add(createButtons());
         
         //Calls the button handler.
-        this.handleButtonEvents();
+        this.handleButtonEvents(provider);
         
         //add the panel with buttons to the popup.
         popup.add(jpanel);
@@ -151,7 +154,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	/**
 	 * Create handlers for buttons.
 	 */
-	private void handleButtonEvents() {
+	private void handleButtonEvents( final ContributionProvider<RequestProgramNodeContribution> provider) {
 		
 		this.createChangeListener(buttonZNegative, Axis.Z_Axis, -0.3);
 		this.createChangeListener(buttonZPositive, Axis.Z_Axis, 0.3);
@@ -163,8 +166,19 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		this.buttonOK.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
+				
 				robotMotionRequester.stopRobotMove();
+				try {
+					provider.get().getInstallation().getXmlRpcDaemonInterface().cancelPopup();
+				} catch (XmlRpcException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (UnknownResponseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				popup.setVisible(false);
+				
 			}
 		});
 		

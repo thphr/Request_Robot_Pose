@@ -34,14 +34,21 @@ public class XmlRPCdaemonInterface {
 		}
 	}
 	
-	public String showPopup() throws XmlRpcException, UnknownResponseException {
+	
+	
+	public boolean showPopup() throws XmlRpcException, UnknownResponseException {
 		Object result  = client.execute("showpopup", new ArrayList<String>());
-		return processString(result);
+		return processBoolean(result);
 	}
 	
-	public String cancelPopup() throws XmlRpcException, UnknownResponseException {
+	public boolean cancelPopup() throws XmlRpcException, UnknownResponseException {
 		Object result = client.execute("cancelpopup", new ArrayList<String>());
-		return processString(result);
+		return processBoolean(result);
+	}
+	
+	public boolean isEnabled() throws XmlRpcException, UnknownResponseException {
+		Object result = client.execute("isEnabled", new ArrayList<String>());
+		return processBoolean(result);
 	}
 	
 	private boolean processBoolean(Object response) throws UnknownResponseException {

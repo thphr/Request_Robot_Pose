@@ -4,7 +4,10 @@ import java.awt.EventQueue;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.xmlrpc.XmlRpcException;
+
 import com.thph.requestrobotpose.impl.daemon.MyDaemonInstallationNodeContribution;
+import com.thph.requestrobotpose.impl.daemon.UnknownResponseException;
 import com.ur.urcap.api.contribution.ProgramNodeContribution;
 import com.ur.urcap.api.contribution.program.ProgramAPIProvider;
 import com.ur.urcap.api.contribution.program.CreationContext;
@@ -18,6 +21,7 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	private final ProgramAPIProvider apiProvider;
 	private final RequestProgramNodeView view;
 	private final DataModel model;
+	
 
 	private Timer uiTimer;
 
@@ -40,8 +44,20 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 				EventQueue.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						//Running check if a popup is requested through daemon (getInstallation).
-						view.openPopopView(view.getProgramnnodeViewPanel());
+						if(getInstallation().getXmlRpcDaemonInterface().isReachable()) {
+							try {
+								if(getInstallation().getXmlRpcDaemonInterface().isEnabled()) {
+									view.openPopopView(view.getProgramnnodeViewPanel());
+								}
+							} catch (XmlRpcException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (UnknownResponseException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					
 					}
 				});
 			}
@@ -65,13 +81,16 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	@Override
 	public void generateScript(ScriptWriter writer) {
 		writer.appendLine("def myprogram():");
-		writer.assign("mydaemon_showpopup", getInstallation().getXMLRPCVariable() + ".showpopup()");
-		writer.appendLine("# Connect to XMLRPC  server" + "mydaemon_showpopup");
+		writer.appendLine(getInstallation().getXMLRPCVariable() + ".showpopup()");
+		writer.assign("isEnabled", "True");
+		writer.appendLine("while(isEnabled == True)");
+		writer.assign("isEnabled", getInstallation().getXMLRPCVariable()+".isEnabled()");
 		writer.appendLine("end");
-
+		writer.appendLine("end");
+		
 	}
 
-	private MyDaemonInstallationNodeContribution getInstallation() {
+	public MyDaemonInstallationNodeContribution getInstallation() {
 		return apiProvider.getProgramAPI().getInstallationNode(MyDaemonInstallationNodeContribution.class);
 	}
 
