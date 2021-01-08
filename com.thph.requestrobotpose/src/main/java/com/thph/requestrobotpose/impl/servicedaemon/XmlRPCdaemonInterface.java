@@ -1,4 +1,4 @@
-package com.thph.requestrobotpose.impl.daemon;
+package com.thph.requestrobotpose.impl.servicedaemon;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
@@ -21,13 +21,13 @@ public class XmlRPCdaemonInterface {
 			e.printStackTrace();
 		}
 		config.setConnectionTimeout(1000); // 1s
-		client = new XmlRpcClient();
-		client.setConfig(config);
+		this.client = new XmlRpcClient();
+		this.client.setConfig(config);
 	}
 
 	public boolean isReachable() {
 		try {
-			client.execute("showpopup", new ArrayList<String>());
+			this.client.execute("showpopup", new ArrayList<String>());
 			return true;
 		} catch (XmlRpcException e) {
 			return false;

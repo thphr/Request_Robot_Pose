@@ -6,8 +6,8 @@ import java.util.TimerTask;
 
 import org.apache.xmlrpc.XmlRpcException;
 
-import com.thph.requestrobotpose.impl.daemon.MyDaemonInstallationNodeContribution;
-import com.thph.requestrobotpose.impl.daemon.UnknownResponseException;
+import com.thph.requestrobotpose.impl.servicedaemon.MyDaemonInstallationNodeContribution;
+import com.thph.requestrobotpose.impl.servicedaemon.UnknownResponseException;
 import com.ur.urcap.api.contribution.ProgramNodeContribution;
 import com.ur.urcap.api.contribution.program.ProgramAPIProvider;
 import com.ur.urcap.api.contribution.program.CreationContext;
@@ -22,7 +22,6 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	private final RequestProgramNodeView view;
 	private final DataModel model;
 	
-
 	private Timer uiTimer;
 
 	public RequestProgramNodeContribution(ProgramAPIProvider apiProvider, RequestProgramNodeView view, DataModel model,
@@ -83,7 +82,7 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		writer.appendLine("def myprogram():");
 		writer.appendLine(getInstallation().getXMLRPCVariable() + ".showpopup()");
 		writer.assign("isEnabled", "True");
-		writer.appendLine("while(isEnabled == True)");
+		writer.appendLine("while(isEnabled == True):");
 		writer.assign("isEnabled", getInstallation().getXMLRPCVariable()+".isEnabled()");
 		writer.appendLine("end");
 		writer.appendLine("end");

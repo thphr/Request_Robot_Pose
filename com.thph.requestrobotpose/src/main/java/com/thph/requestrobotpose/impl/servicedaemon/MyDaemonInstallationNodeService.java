@@ -1,4 +1,4 @@
-package com.thph.requestrobotpose.impl.daemon;
+package com.thph.requestrobotpose.impl.servicedaemon;
 
 import java.util.Locale;
 
@@ -12,7 +12,7 @@ import com.ur.urcap.api.domain.data.DataModel;
 public class MyDaemonInstallationNodeService
 		implements SwingInstallationNodeService<MyDaemonInstallationNodeContribution, MyDaemonInstallationNodeView> {
 	
-	private MyDaemonService myDaemonService;
+	private final MyDaemonService myDaemonService;
 
 	public MyDaemonInstallationNodeService(MyDaemonService myDaemonService) {
 
@@ -37,7 +37,7 @@ public class MyDaemonInstallationNodeService
 	@Override
 	public MyDaemonInstallationNodeContribution createInstallationNode(InstallationAPIProvider apiProvider,
 			MyDaemonInstallationNodeView view, DataModel model, CreationContext context) {
-		return new MyDaemonInstallationNodeContribution(apiProvider, view, model, context,myDaemonService);
+		return new MyDaemonInstallationNodeContribution(apiProvider, view, model, context,this.myDaemonService);
 	}
 
 }

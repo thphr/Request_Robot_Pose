@@ -3,8 +3,8 @@ package com.thph.requestrobotpose.impl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import com.thph.requestrobotpose.impl.daemon.MyDaemonInstallationNodeService;
-import com.thph.requestrobotpose.impl.daemon.MyDaemonService;
+import com.thph.requestrobotpose.impl.servicedaemon.MyDaemonInstallationNodeService;
+import com.thph.requestrobotpose.impl.servicedaemon.MyDaemonService;
 import com.ur.urcap.api.contribution.DaemonService;
 import com.ur.urcap.api.contribution.installation.swing.SwingInstallationNodeService;
 import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeService;
@@ -23,9 +23,10 @@ public class Activator implements BundleActivator {
 		MyDaemonService myDaemonService = new MyDaemonService();
 		MyDaemonInstallationNodeService myDaemonInstallationNodeService = new MyDaemonInstallationNodeService(myDaemonService);
 		
+		bundleContext.registerService(DaemonService.class, myDaemonService, null);
 		bundleContext.registerService(SwingInstallationNodeService.class,myDaemonInstallationNodeService, null);
 		bundleContext.registerService(SwingProgramNodeService.class, new RequestProgramNodeService(), null);
-		bundleContext.registerService(DaemonService.class, myDaemonService, null);
+		
 	}
  
 	@Override

@@ -1,4 +1,4 @@
-package com.thph.requestrobotpose.impl.daemon;
+package com.thph.requestrobotpose.impl.servicedaemon;
 
 import java.awt.EventQueue;
 import java.util.Timer;
@@ -13,28 +13,43 @@ import com.ur.urcap.api.domain.script.ScriptWriter;
 
 public class MyDaemonInstallationNodeContribution implements InstallationNodeContribution {
 
-	private MyDaemonService myDaemonService;
+	private final MyDaemonService myDaemonService;
 	private XmlRPCdaemonInterface xmlRPCdaemonInterface;
 	private final MyDaemonInstallationNodeView view;
 	private DataModel model;
 
 	private Timer uiTimer;
-	private boolean pauseTimer = false;
+	private boolean pauseTimer;
 	public static final int PORT = 40405;
 	private static final String ENABLED_KEY = "enabled";
 	private static final String XMLRPC_VARIABLE = "my_daemon_swing";
 
 	public MyDaemonInstallationNodeContribution(InstallationAPIProvider apiProvider, MyDaemonInstallationNodeView view,
 			DataModel model, CreationContext context, MyDaemonService myDaemonService) {
+		this.pauseTimer = false;
+		
 		this.myDaemonService = myDaemonService;
 		this.view = view;
 		this.model = model;
 		this.xmlRPCdaemonInterface = new XmlRPCdaemonInterface("127.0.0.1", PORT);
 
+		applyDesiredDaemonStatus();
+
+	}
+
+
+	private boolean getCB() {
+		return Boolean.valueOf((model.get(ENABLED_KEY, true)));
 	}
 
 	@Override
 	public void openView() {
+		if (getCB() && (DaemonContribution.State.STOPPED == this.myDaemonService.getDaemon().getState())) {
+			this.myDaemonService.getDaemon().start();
+		} else if (getCB() == false) {
+			this.myDaemonService.getDaemon().stop();
+		}
+
 		// UI updates from non-GUI threads must use EventQueue.invokeLater (or
 		// SwingUtilities.invokeLater)
 		uiTimer = new Timer(true);
@@ -44,9 +59,7 @@ public class MyDaemonInstallationNodeContribution implements InstallationNodeCon
 				EventQueue.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						if (!pauseTimer) {
-							updateUI();
-						}
+						updateUI();
 					}
 				});
 			}
@@ -58,21 +71,19 @@ public class MyDaemonInstallationNodeContribution implements InstallationNodeCon
 		if (uiTimer != null) {
 			uiTimer.cancel();
 		}
+
 	}
 
 	@Override
 	public void generateScript(ScriptWriter writer) {
-//		if(isDaemonEnabled()){
-			writer.appendLine("# Connect to XMLRPC server");
-			writer.assign(XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:40405/RPC2\")");
-//		}
-
+		writer.assign(XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:40405/RPC2\")");
 	}
+
 
 	private void updateUI() {
 		DaemonContribution.State state = getDaemonState();
 
-		if (state == DaemonContribution.State.RUNNING) {
+		if (state == DaemonContribution.State.RUNNING || state == DaemonContribution.State.ERROR) {
 			view.setStartButtonEnabled(false);
 			view.setStopButtonEnabled(true);
 		} else {
@@ -97,12 +108,12 @@ public class MyDaemonInstallationNodeContribution implements InstallationNodeCon
 	}
 
 	private DaemonContribution.State getDaemonState() {
-		return myDaemonService.getDaemon().getState();
+		return this.myDaemonService.getDaemon().getState();
 
 	}
 
 	private Boolean isDaemonEnabled() {
-		return model.get(ENABLED_KEY, true); // This daemon is enabled by default
+		return  Boolean.valueOf(model.get(ENABLED_KEY, true)); // This daemon is enabled by default
 	}
 
 	public void onStartClick() {
@@ -115,22 +126,30 @@ public class MyDaemonInstallationNodeContribution implements InstallationNodeCon
 		applyDesiredDaemonStatus();
 	}
 
+
 	public XmlRPCdaemonInterface getXmlRpcDaemonInterface() {
-		return xmlRPCdaemonInterface;
+		return this.xmlRPCdaemonInterface;
 	}
 
 	private void applyDesiredDaemonStatus() {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				if (isDaemonEnabled()) {
+				if (isDaemonEnabled().booleanValue()) {
 					// Download the daemon settings to the daemon process on initial start for
 					// real-time preview purposes
+					System.out.println("Starting daemon");
 					try {
 						pauseTimer = true;
 						awaitDaemonRunning(5000);
+						boolean test = xmlRPCdaemonInterface.isReachable();
+						if(test) {
+							System.out.println("Daemon is running");
+						}else {
+							System.out.println("Daemon is not running");
+						}
 					} catch (Exception e) {
-						System.err.println("Could not set the title in the daemon process.");
+						System.err.println("Could not reach the daemon process.");
 					} finally {
 						pauseTimer = false;
 					}
@@ -141,23 +160,20 @@ public class MyDaemonInstallationNodeContribution implements InstallationNodeCon
 		}).start();
 	}
 
-	private void awaitDaemonRunning(long timeOutMilliSeconds) {
-		myDaemonService.getDaemon().start();
+	private void awaitDaemonRunning(long timeOutMilliSeconds) throws InterruptedException {
+		this.myDaemonService.getDaemon().start();
 		long endTime = System.nanoTime() + timeOutMilliSeconds * 1000L * 1000L;
 		while (System.nanoTime() < endTime
-				&& (myDaemonService.getDaemon().getState() != DaemonContribution.State.RUNNING|| !xmlRPCdaemonInterface.isReachable()
-						)) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				&& (this.myDaemonService.getDaemon().getState() != DaemonContribution.State.RUNNING
+						|| !xmlRPCdaemonInterface.isReachable())) {
+
+			Thread.sleep(100);
+
 		}
 	}
-	
-	public String getXMLRPCVariable(){
+
+	public String getXMLRPCVariable() {
 		return XMLRPC_VARIABLE;
 	}
-	
+
 }

@@ -1,4 +1,4 @@
-package com.thph.requestrobotpose.impl.daemon;
+package com.thph.requestrobotpose.impl.servicedaemon;
 
 public class UnknownResponseException extends Exception {
 

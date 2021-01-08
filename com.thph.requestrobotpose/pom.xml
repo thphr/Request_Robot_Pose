@@ -113,48 +113,6 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.1</version>
 				<executions>
-				<!-- <execution>
-						<id>clean-daemon</id>
-						<phase>clean</phase>    
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>scons</executable>
-							<arguments>
-								<argument>-c</argument>
-							</arguments>
-							<workingDirectory>./daemon</workingDirectory>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>compile-daemon</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>exec</goal> 
-						</goals>
-						<configuration>
-							<executable>scons</executable>
-							<arguments>
-								<argument>release=1</argument>
-							</arguments>
-							<workingDirectory>./daemon</workingDirectory>
-						</configuration>
-					</execution> 
-
-					<execution> 
-						<id>copy-daemon</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration> 
-							<executable>cp</executable>
-							<commandlineArgs>daemon/popupxmlrpc src/main/resources/com/thph/requestrobotpose/impl/daemon/</commandlineArgs>
-							<workingDirectory>.</workingDirectory>
-						</configuration>
-					</execution> -->
 					<!-- generate URCap package after compiling -->
 					<execution>
 						<id>package-urcap</id>
@@ -169,7 +127,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> 
 		</plugins>
 	</build>
 
@@ -183,7 +141,7 @@
 		<dependency>
 			<groupId>com.ur.urcap</groupId>
 			<artifactId>api</artifactId>
-			<version>1.8.0</version>
+			<version>1.11.0</version>
 			<scope>provided</scope>
 		</dependency>
 	
