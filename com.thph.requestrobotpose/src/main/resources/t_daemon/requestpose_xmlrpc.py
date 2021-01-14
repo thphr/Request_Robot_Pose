@@ -17,6 +17,7 @@ def showpopup():
   return isShowing
 
 def isEnabled():
+  global isShowing
   return isShowing
 
 def cancelpopup():

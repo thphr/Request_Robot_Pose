@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.xmlrpc.XmlRpcException;
+
 import com.ur.urcap.api.contribution.DaemonContribution;
 import com.ur.urcap.api.contribution.InstallationNodeContribution;
 import com.ur.urcap.api.contribution.installation.CreationContext;
@@ -26,17 +28,15 @@ public class MyDaemonInstallationNodeContribution implements InstallationNodeCon
 
 	public MyDaemonInstallationNodeContribution(InstallationAPIProvider apiProvider, MyDaemonInstallationNodeView view,
 			DataModel model, CreationContext context, MyDaemonService myDaemonService) {
-		this.pauseTimer = false;
 		
+		this.pauseTimer = false;
 		this.myDaemonService = myDaemonService;
 		this.view = view;
 		this.model = model;
 		this.xmlRPCdaemonInterface = new XmlRPCdaemonInterface("127.0.0.1", PORT);
-
+		
 		applyDesiredDaemonStatus();
-
 	}
-
 
 	private boolean getCB() {
 		return Boolean.valueOf((model.get(ENABLED_KEY, true)));
@@ -71,13 +71,13 @@ public class MyDaemonInstallationNodeContribution implements InstallationNodeCon
 		if (uiTimer != null) {
 			uiTimer.cancel();
 		}
-
+		myDaemonService.getDaemon().stop();
+		
 	}
 
 	@Override
 	public void generateScript(ScriptWriter writer) {
 		writer.assign(XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:40405/RPC2\")");
-		writer.appendLine(XMLRPC_VARIABLE + ".showpopup()");
 	}
 
 

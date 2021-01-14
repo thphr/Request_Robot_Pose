@@ -27,7 +27,7 @@ public class XmlRPCdaemonInterface {
 
 	public boolean isReachable() {
 		try {
-			this.client.execute("showpopup", new ArrayList<String>());
+			this.client.execute("isEnabled", new ArrayList<String>());
 			return true;
 		} catch (XmlRpcException e) {
 			return false;
