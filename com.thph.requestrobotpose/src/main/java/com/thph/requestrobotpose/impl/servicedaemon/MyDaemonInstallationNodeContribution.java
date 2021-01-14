@@ -77,6 +77,7 @@ public class MyDaemonInstallationNodeContribution implements InstallationNodeCon
 	@Override
 	public void generateScript(ScriptWriter writer) {
 		writer.assign(XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:40405/RPC2\")");
+		writer.appendLine(XMLRPC_VARIABLE + ".showpopup()");
 	}
 
 

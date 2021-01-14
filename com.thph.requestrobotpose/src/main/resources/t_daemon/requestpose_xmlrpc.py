@@ -12,15 +12,17 @@ isShowing = False
 LOCALHOST = "127.0.0.1"
 
 def showpopup():
-    isShowing = True
-    return isShowing
+  global isShowing
+  isShowing = True
+  return isShowing
 
 def isEnabled():
-    return isShowing
+  return isShowing
 
 def cancelpopup():
-    isShowing = False
-    return isShowing
+  global isShowing
+  isShowing = False
+  return isShowing
 
 
 class MultithreadedSimpleXMLRPCServer(ThreadingMixIn, SimpleXMLRPCServer):

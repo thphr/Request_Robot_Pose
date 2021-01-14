@@ -44,7 +44,9 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 					@Override
 					public void run() {
 						if(getInstallation().getXmlRpcDaemonInterface().isReachable()) {
+							System.out.println("Programnode: It's reachable");
 							try {
+								System.out.println("programnode: " + getInstallation().getXmlRpcDaemonInterface().isEnabled());
 								if(getInstallation().getXmlRpcDaemonInterface().isEnabled()) {
 									view.openPopopView(view.getProgramnnodeViewPanel());
 								}
@@ -79,13 +81,13 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 
 	@Override
 	public void generateScript(ScriptWriter writer) {
-		writer.appendLine("def myprogram():");
-		writer.appendLine(getInstallation().getXMLRPCVariable() + ".showpopup()");
-		writer.assign("isEnabled", "True");
-		writer.appendLine("while(isEnabled == True):");
-		writer.assign("isEnabled", getInstallation().getXMLRPCVariable()+".isEnabled()");
-		writer.appendLine("end");
-		writer.appendLine("end");
+//		writer.appendLine("def myprogram():");
+//		writer.appendLine(getInstallation().getXMLRPCVariable() + ".showpopup()");
+//		writer.assign("isEnabled", "True");
+//		writer.appendLine("while(isEnabled == True):");
+//		writer.assign("isEnabled", getInstallation().getXMLRPCVariable()+".isEnabled()");
+//		writer.appendLine("end");
+//		writer.appendLine("end");
 		
 	}
 
