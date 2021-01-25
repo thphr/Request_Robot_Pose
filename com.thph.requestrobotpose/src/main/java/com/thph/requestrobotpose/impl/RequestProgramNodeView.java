@@ -165,7 +165,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 			@Override
 			public void stateChanged(ChangeEvent e) {
 
-				robotMotionRequester.stopRobotMove();
+//				robotMotionRequester.stopRobotMove();
 				try {
 					provider.get().getInstallation().getXmlRpcDaemonInterface().cancelPopup();
 					provider.get().setPopupStillEnabled(false);

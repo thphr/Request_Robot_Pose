@@ -28,6 +28,7 @@ public class RobotMotionRequester {
 		setupAxisToToolMap();
 		setAcceleration(0.5);
 		setStopAcceleration(20.0);
+		//TODO:set back to 0.5
 		setFuncionReturnTime(0.5);
 	}
 	
@@ -64,7 +65,7 @@ public class RobotMotionRequester {
 		ScriptSender sender = new ScriptSender();
 
 		ScriptCommand senderCommand = new ScriptCommand("SenderCommand");
-		senderCommand.setAsSecondaryProgram();
+		senderCommand.setAsPrimaryProgram();
 		senderCommand.appendLine("stopl("+ getStopAcceleration()+")");
 		
 		sender.sendScriptCommand(senderCommand);
@@ -75,7 +76,7 @@ public class RobotMotionRequester {
 		ScriptSender sender = new ScriptSender();
 
 		ScriptCommand senderCommand = new ScriptCommand("SenderCommand");
-		senderCommand.setAsSecondaryProgram(); 
+		senderCommand.setAsPrimaryProgram();
 		senderCommand.appendLine("speedl("+ tool_speed +","+ acceleration+","+time+")");
 		
 		sender.sendScriptCommand(senderCommand);

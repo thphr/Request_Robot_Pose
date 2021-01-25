@@ -91,12 +91,18 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		writer.appendLine(getInstallation().getXMLRPCVariable() + ".showpopup()");
 		
 		//Needs a thread that runs a while-loop to check the response when popup should be cancel
-		writer.appendLine("def myprogram():");
 		writer.assign("isEnabled", "True");
 		writer.appendLine("while(isEnabled == True):");
 		writer.assign("isEnabled", getInstallation().getXMLRPCVariable()+".isEnabled()");
+		writer.appendLine("sync()");
+		writer.sleep(0.3);
+//		writer.appendLine("stopl(2)");
+		writer.appendLine("textmsg(\"test\")");
 		writer.appendLine("end");
-		writer.appendLine("end");
+		
+	
+		
+		
 
 	}
 
