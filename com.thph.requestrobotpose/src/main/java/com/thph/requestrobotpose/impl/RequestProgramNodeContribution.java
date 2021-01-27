@@ -1,6 +1,7 @@
 package com.thph.requestrobotpose.impl;
 
 import java.awt.EventQueue;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,9 +23,9 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	private final ProgramAPIProvider apiProvider;
 	private final RequestProgramNodeView view;
 	private final DataModel model;
-	
+
 	private RobotMotionRequester robotMotionRequester;
-	
+
 	private boolean isPopupStillEnabled;
 
 	private Timer uiTimer;
@@ -37,9 +38,8 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		this.view = view;
 		this.model = model;
 		this.isPopupStillEnabled = false;
-		
-		this.robotMotionRequester = new RobotMotionRequester();
 
+		this.robotMotionRequester = new RobotMotionRequester();
 
 	}
 
@@ -93,63 +93,87 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	@Override
 	public void generateScript(ScriptWriter writer) {
 		writer.appendLine(getInstallation().getXMLRPCVariable() + ".showpopup()");
-		
+
 		writer.assign("isEnabled", "True");
 		writer.appendLine("while(isEnabled == True):");
-		writer.assign("isEnabled", getInstallation().getXMLRPCVariable()+".isEnabled()");
+		writer.assign("isEnabled", getInstallation().getXMLRPCVariable() + ".isEnabled()");
+
+		writer.assign(Direction.ZNEGATIVE.label,
+				getInstallation().getXMLRPCVariable() + ".getDirectionEnabled(\"" + Direction.ZNEGATIVE.label + "\")");
+		writer.assign(Direction.ZPOSITIVE.label,
+				getInstallation().getXMLRPCVariable() + ".getDirectionEnabled(\"" + Direction.ZPOSITIVE.label + "\")");
+		writer.assign(Direction.YNEGATIVE.label,
+				getInstallation().getXMLRPCVariable() + ".getDirectionEnabled(\"" + Direction.YNEGATIVE.label + "\")");
+		writer.assign(Direction.YPOSITIVE.label,
+				getInstallation().getXMLRPCVariable() + ".getDirectionEnabled(\"" + Direction.YPOSITIVE.label + "\")");
+		writer.assign(Direction.XNEGATIVE.label,
+				getInstallation().getXMLRPCVariable() + ".getDirectionEnabled(\"" + Direction.XNEGATIVE.label + "\")");
+		writer.assign(Direction.XPOSITIVE.label,
+				getInstallation().getXMLRPCVariable() + ".getDirectionEnabled(\"" + Direction.XPOSITIVE.label + "\")");
+
 		
-		writer.assign(Direction.ZNEGATIVE.label, getInstallation().getXMLRPCVariable()+".getDirectionEnabled(\""+Direction.ZNEGATIVE.label+"\")");
-		writer.assign(Direction.ZPOSITIVE.label, getInstallation().getXMLRPCVariable()+".getDirectionEnabled(\""+Direction.ZPOSITIVE.label+"\")");
-		writer.assign(Direction.YNEGATIVE.label, getInstallation().getXMLRPCVariable()+".getDirectionEnabled(\""+Direction.YNEGATIVE.label+"\")");
-		writer.assign(Direction.YPOSITIVE.label, getInstallation().getXMLRPCVariable()+".getDirectionEnabled(\""+Direction.YPOSITIVE.label+"\")");
-		writer.assign(Direction.XNEGATIVE.label, getInstallation().getXMLRPCVariable()+".getDirectionEnabled(\""+Direction.XNEGATIVE.label+"\")");
-		writer.assign(Direction.XPOSITIVE.label, getInstallation().getXMLRPCVariable()+".getDirectionEnabled(\""+Direction.XPOSITIVE.label+"\")");
 		
-		//----------------Z DIRECTION-------------------------------------------------------
-		writer.appendLine("if("+Direction.ZNEGATIVE.label+" == True):");
-		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.Z_Axis,-0.3));
-		writer.appendLine("elif("+Direction.ZNEGATIVE.label+" == False):");
-		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
-		writer.appendLine("end");
-		
-		writer.appendLine("if("+Direction.ZPOSITIVE.label+" == True):");
-		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.Z_Axis,0.3));
-		writer.appendLine("elif("+Direction.ZPOSITIVE.label+" == False):");
-		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
-		writer.appendLine("end");
-		
-		//----------------Y DIRECTION-------------------------------------------------------
-		writer.appendLine("if("+Direction.YNEGATIVE.label+" == True):");
-		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.Y_Axis,-0.3));
-		writer.appendLine("elif("+Direction.YNEGATIVE.label+" == False):");
-		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
-		writer.appendLine("end");
-		
-		writer.appendLine("if("+Direction.YPOSITIVE.label+" == True):");
-		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.Y_Axis,0.3));
-		writer.appendLine("elif("+Direction.YPOSITIVE.label+" == False):");
-		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
-		writer.appendLine("end");
-		
-		//----------------X DIRECTION-------------------------------------------------------
-		writer.appendLine("if("+Direction.XNEGATIVE.label+" == True):");
-		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.X_Axis,-0.3));
-		writer.appendLine("elif("+Direction.XNEGATIVE.label+" == False):");
-		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
-		writer.appendLine("end");
-		
-		writer.appendLine("if("+Direction.XPOSITIVE.label+" == True):");
-		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.X_Axis,0.3));
-		writer.appendLine("elif("+Direction.XPOSITIVE.label+" == False):");
-		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
-		writer.appendLine("end");
-		
+		setDirection(writer, Direction.ZNEGATIVE.label, Axis.Z_Axis, -0.3);
+		setDirection(writer, Direction.ZPOSITIVE.label, Axis.Z_Axis, 0.3);
+		setDirection(writer, Direction.YNEGATIVE.label, Axis.Y_Axis, -0.3);
+		setDirection(writer, Direction.YPOSITIVE.label, Axis.Y_Axis, 0.3);
+		setDirection(writer, Direction.XNEGATIVE.label, Axis.X_Axis, -0.3);
+		setDirection(writer, Direction.XPOSITIVE.label, Axis.X_Axis, 0.3);
+		 
+		// ----------------Z
+		// DIRECTION-------------------------------------------------------
+//		writer.appendLine("if(" + Direction.ZNEGATIVE.label + " == True):");
+//		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.Z_Axis, -0.3));
+//		writer.appendLine("elif(" + Direction.ZNEGATIVE.label + " == False):");
+//		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
+//		writer.appendLine("end");
+//
+//		writer.appendLine("if(" + Direction.ZPOSITIVE.label + " == True):");
+//		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.Z_Axis, 0.3));
+//		writer.appendLine("elif(" + Direction.ZPOSITIVE.label + " == False):");
+//		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
+//		writer.appendLine("end");
+
+		// ----------------Y
+		// DIRECTION-------------------------------------------------------
+//		writer.appendLine("if(" + Direction.YNEGATIVE.label + " == True):");
+//		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.Y_Axis, -0.3));
+//		writer.appendLine("elif(" + Direction.YNEGATIVE.label + " == False):");
+//		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
+//		writer.appendLine("end");
+//
+//		writer.appendLine("if(" + Direction.YPOSITIVE.label + " == True):");
+//		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.Y_Axis, 0.3));
+//		writer.appendLine("elif(" + Direction.YPOSITIVE.label + " == False):");
+//		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
+//		writer.appendLine("end");
+
+		// ----------------X
+		// DIRECTION-------------------------------------------------------
+//		writer.appendLine("if(" + Direction.XNEGATIVE.label + " == True):");
+//		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.X_Axis, -0.3));
+//		writer.appendLine("elif(" + Direction.XNEGATIVE.label + " == False):");
+//		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
+//		writer.appendLine("end");
+//
+//		writer.appendLine("if(" + Direction.XPOSITIVE.label + " == True):");
+//		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.X_Axis, 0.3));
+//		writer.appendLine("elif(" + Direction.XPOSITIVE.label + " == False):");
+//		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
+//		writer.appendLine("end");
+
 		writer.appendLine("sync()");
 		writer.sleep(0.3);
 		writer.appendLine("textmsg(\"test\")");
 		writer.appendLine("end");
-		
-		
+
+	}
+	private void setDirection(ScriptWriter writer, String directionlabel, Axis axis, double speed) {
+		writer.appendLine("if(" + directionlabel + " == True):");
+		writer.appendLine(robotMotionRequester.requestScriptRobotMove(axis, speed));
+		writer.appendLine("elif(" + directionlabel + " == False):");
+		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
+		writer.appendLine("end");
 	}
 
 	public MyDaemonInstallationNodeContribution getInstallation() {
@@ -163,7 +187,5 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	public boolean isPopupStillEnabled() {
 		return isPopupStillEnabled;
 	}
-
-
 
 }

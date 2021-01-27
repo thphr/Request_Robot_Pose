@@ -15,6 +15,7 @@ import javax.swing.event.ChangeListener;
 
 import org.apache.xmlrpc.XmlRpcException;
 
+import java.awt.Button;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -34,7 +35,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	final RobotMotionRequester robotMotionRequester = new RobotMotionRequester();
 
 	// Tempoary button for triggering the popup.
-	final JButton buttontest = new JButton();
+//	final JButton buttontest = new JButton();
 
 	// Style guide library
 	URButtons urButtons = new URButtons();
@@ -56,11 +57,11 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		this.setProgramnnodeViewPanel(panel);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.add(this.createPopup(panel, provider));
-		System.out.println("width: " + panel.getWidth());
 
 	}
 
 	public void openPopopView(JPanel panel) {
+		buttonOK.getModel().setPressed(false);
 		popup.show(panel, panel.getWidth() / 4, 0);
 	}
 
@@ -84,18 +85,18 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		// add the panel with buttons to the popup.
 		popup.add(jpanel);
 
-		buttontest.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				//w 640 - 900
-				popup.show(panel, panel.getWidth() / 4, 0);
-				
-			}
-		});
+//		buttontest.addActionListener(new ActionListener() {
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				// w 640 - 900
+//				popup.show(panel, panel.getWidth() / 4, 0);
+//
+//			}
+//		});
 
 		box.add(popup);
-		box.add(buttontest);
+//		box.add(buttontest);
 
 		return box;
 	}
@@ -154,46 +155,51 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 */
 	private void handleButtonEvents(final ContributionProvider<RequestProgramNodeContribution> provider) {
 
-		//TODO: without script-level --> remove provider and Direction
-		this.createChangeListener(buttonZNegative, Axis.Z_Axis, -0.3,provider, Direction.ZNEGATIVE.label);
-		this.createChangeListener(buttonZPositive, Axis.Z_Axis, 0.3,provider, Direction.ZPOSITIVE.label);
-		this.createChangeListener(buttonYNegative, Axis.Y_Axis, -0.3,provider, Direction.YNEGATIVE.label);
-		this.createChangeListener(buttonYPositive, Axis.Y_Axis, 0.3,provider, Direction.YPOSITIVE.label);
-		this.createChangeListener(buttonXNegative, Axis.X_Axis, -0.3,provider, Direction.XNEGATIVE.label);
-		this.createChangeListener(buttonXPositive, Axis.X_Axis, 0.3,provider,Direction.XPOSITIVE.label);
+		// TODO: without script-level --> remove provider and Direction
+		this.createChangeListener(buttonZNegative, Axis.Z_Axis, -0.3, provider, Direction.ZNEGATIVE.label);
+		this.createChangeListener(buttonZPositive, Axis.Z_Axis, 0.3, provider, Direction.ZPOSITIVE.label);
+		this.createChangeListener(buttonYNegative, Axis.Y_Axis, -0.3, provider, Direction.YNEGATIVE.label);
+		this.createChangeListener(buttonYPositive, Axis.Y_Axis, 0.3, provider, Direction.YPOSITIVE.label);
+		this.createChangeListener(buttonXNegative, Axis.X_Axis, -0.3, provider, Direction.XNEGATIVE.label);
+		this.createChangeListener(buttonXPositive, Axis.X_Axis, 0.3, provider, Direction.XPOSITIVE.label);
 
-		this.buttonOK.addChangeListener(new ChangeListener() {
+		this.buttonOK.getModel().addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 
-				try {
-					provider.get().getInstallation().getXmlRpcDaemonInterface().cancelPopup();
-					provider.get().setPopupStillEnabled(false);
+				ButtonModel model = (ButtonModel) e.getSource();
 
-				} catch (XmlRpcException e1) {
-					e1.printStackTrace();
-				} catch (UnknownResponseException e1) {
-					e1.printStackTrace();
+				if (model.isPressed()) {
+					try {
+						provider.get().getInstallation().getXmlRpcDaemonInterface().cancelPopup();
+					} catch (XmlRpcException e1) {
+						e1.printStackTrace();
+					} catch (UnknownResponseException e1) {
+						e1.printStackTrace();
+					}
+					
+					provider.get().setPopupStillEnabled(false);
+					popup.setVisible(false);
 				}
-				
-				popup.setVisible(false);
 
 			}
 		});
 
 	}
 
-
-	//TODO: without script-level --> remove provider and Direction from method parameters
+	// TODO: without script-level --> remove provider and Direction from method
+	// parameters
 	/**
 	 * Generic handlers for button event.
+	 * 
 	 * @param button
 	 * @param axis
 	 * @param speed
 	 * @param provider
 	 * @param direction
 	 */
-	private void createChangeListener(final JButton button, final Axis axis, final double speed,final ContributionProvider<RequestProgramNodeContribution> provider, final String direction) {
+	private void createChangeListener(final JButton button, final Axis axis, final double speed,
+			final ContributionProvider<RequestProgramNodeContribution> provider, final String direction) {
 		button.getModel().addChangeListener(new ChangeListener() {
 
 			@Override
@@ -201,20 +207,24 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 				ButtonModel model = (ButtonModel) e.getSource();
 
-				//TODO: without script-level --> remove the provider logic and insert: robotMotionRequester.requestRobotMove(axis, speed);
+				// TODO: without script-level --> remove the provider logic and insert:
+				// robotMotionRequester.requestRobotMove(axis, speed);
 				if (model.isPressed()) {
 					try {
-						provider.get().getInstallation().getXmlRpcDaemonInterface().setDirectionEnabled(direction, true);
+						provider.get().getInstallation().getXmlRpcDaemonInterface().setDirectionEnabled(direction,
+								true);
 					} catch (XmlRpcException e1) {
 						e1.printStackTrace();
 					} catch (UnknownResponseException e1) {
 						e1.printStackTrace();
 					}
-				
-				//TODO: without script-level --> remove the provider logic and insert: robotMotionRequester.stopRobotMove();;
-				}else if(!model.isPressed()) {
+
+					// TODO: without script-level --> remove the provider logic and insert:
+					// robotMotionRequester.stopRobotMove();;
+				} else if (!model.isPressed()) {
 					try {
-						provider.get().getInstallation().getXmlRpcDaemonInterface().setDirectionEnabled(direction, false);
+						provider.get().getInstallation().getXmlRpcDaemonInterface().setDirectionEnabled(direction,
+								false);
 					} catch (XmlRpcException e1) {
 						e1.printStackTrace();
 					} catch (UnknownResponseException e1) {
