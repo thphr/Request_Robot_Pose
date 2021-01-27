@@ -10,6 +10,7 @@ import com.ur.urcap.api.contribution.ContributionProvider;
 import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeView;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JWindow;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -24,6 +25,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 
 public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgramNodeContribution> {
 
@@ -33,9 +35,6 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 	// Initiate command sender.
 	final RobotMotionRequester robotMotionRequester = new RobotMotionRequester();
-
-	// Tempoary button for triggering the popup.
-//	final JButton buttontest = new JButton();
 
 	// Style guide library
 	URButtons urButtons = new URButtons();
@@ -74,29 +73,18 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	private Box createPopup(final JPanel panel, ContributionProvider<RequestProgramNodeContribution> provider) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+		
 		// Create a jpanel with a title.
 		JPanel jpanel = previewUI.AddComponentsToUI("Popup");
 		jpanel.add(createButtons());
-
+		
 		// Calls the button handler.
 		this.handleButtonEvents(provider);
 
 		// add the panel with buttons to the popup.
 		popup.add(jpanel);
 
-//		buttontest.addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				// w 640 - 900
-//				popup.show(panel, panel.getWidth() / 4, 0);
-//
-//			}
-//		});
-
 		box.add(popup);
-//		box.add(buttontest);
 
 		return box;
 	}
