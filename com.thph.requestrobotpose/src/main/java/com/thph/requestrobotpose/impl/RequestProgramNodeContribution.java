@@ -6,6 +6,7 @@ import java.util.TimerTask;
 
 import org.apache.xmlrpc.XmlRpcException;
 
+import com.thph.requestrobotpose.impl.RobotMotionRequester.Axis;
 import com.thph.requestrobotpose.impl.servicedaemon.MyDaemonInstallationNodeContribution;
 import com.thph.requestrobotpose.impl.servicedaemon.UnknownResponseException;
 import com.ur.urcap.api.contribution.ProgramNodeContribution;
@@ -23,15 +24,6 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	private final DataModel model;
 	
 	private RobotMotionRequester robotMotionRequester;
-	
-	private static final String Z_NEGATIVE = "zNegative";
-	private static final String Z_POSITIVE = "zPositive";
-	
-	private static final String Y_NEGATIVE = "yNegative";
-	private static final String Y_POSITIVE = "yPositive";
-	
-	private static final String X_NEGATIVE = "xNegative";
-	private static final String X_POSITIVE = "xPositive";
 	
 	private boolean isPopupStillEnabled;
 
@@ -63,9 +55,6 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 						if (getInstallation().getXmlRpcDaemonInterface().isReachable()) {
 							if (!isPopupStillEnabled()) {
 								try {
-									boolean result = getInstallation().getXmlRpcDaemonInterface().getDirectionEnabled("zNegative");
-									System.out.println("ProgramnodeButton:" + result);
-//									System.out.println("programnode: " + getInstallation().getXmlRpcDaemonInterface().isEnabled());
 									if (getInstallation().getXmlRpcDaemonInterface().isEnabled()) {
 										view.openPopopView(view.getProgramnnodeViewPanel());
 										setPopupStillEnabled(true);
@@ -105,22 +94,54 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	public void generateScript(ScriptWriter writer) {
 		writer.appendLine(getInstallation().getXMLRPCVariable() + ".showpopup()");
 		
-		//Needs a thread that runs a while-loop to check the response when popup should be cancel
 		writer.assign("isEnabled", "True");
 		writer.appendLine("while(isEnabled == True):");
 		writer.assign("isEnabled", getInstallation().getXMLRPCVariable()+".isEnabled()");
 		
-		writer.assign("zNegativeEnabled", getInstallation().getXMLRPCVariable()+".getDirectionEnabled(\""+Z_NEGATIVE+"\")");
-//		writer.assign("zPositiveEnabled", getInstallation().getXMLRPCVariable()+".getDirection("+Z_POSITIVE+")");
-//		writer.assign("yNegativeEnabled", getInstallation().getXMLRPCVariable()+".getDirection("+Y_NEGATIVE+")");
-//		writer.assign("yPositiveEnabled", getInstallation().getXMLRPCVariable()+".getDirection("+Y_POSITIVE+")");
-//		writer.assign("xNegativeEnabled", getInstallation().getXMLRPCVariable()+".getDirection("+X_NEGATIVE+")");
-//		writer.assign("xPositiveEnabled", getInstallation().getXMLRPCVariable()+".getDirection("+X_POSITIVE+")");
+		writer.assign(Direction.ZNEGATIVE.label, getInstallation().getXMLRPCVariable()+".getDirectionEnabled(\""+Direction.ZNEGATIVE.label+"\")");
+		writer.assign(Direction.ZPOSITIVE.label, getInstallation().getXMLRPCVariable()+".getDirectionEnabled(\""+Direction.ZPOSITIVE.label+"\")");
+		writer.assign(Direction.YNEGATIVE.label, getInstallation().getXMLRPCVariable()+".getDirectionEnabled(\""+Direction.YNEGATIVE.label+"\")");
+		writer.assign(Direction.YPOSITIVE.label, getInstallation().getXMLRPCVariable()+".getDirectionEnabled(\""+Direction.YPOSITIVE.label+"\")");
+		writer.assign(Direction.XNEGATIVE.label, getInstallation().getXMLRPCVariable()+".getDirectionEnabled(\""+Direction.XNEGATIVE.label+"\")");
+		writer.assign(Direction.XPOSITIVE.label, getInstallation().getXMLRPCVariable()+".getDirectionEnabled(\""+Direction.XPOSITIVE.label+"\")");
 		
-		writer.appendLine("if(zNegativeEnabled == True):");
-		writer.appendLine("speedl(\"[0.0,0.0,-1.0,0.0,0.0,0.0]\",\""+ robotMotionRequester.getAcceleration()+ "\",\""+robotMotionRequester.getFuncionReturnTime()+"\")");
-		writer.appendLine("elif(zNegativeEnabled == False):");
-		writer.appendLine("stopl("+robotMotionRequester.getStopAcceleration()+")");
+		//----------------Z DIRECTION-------------------------------------------------------
+		writer.appendLine("if("+Direction.ZNEGATIVE.label+" == True):");
+		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.Z_Axis,-0.3));
+		writer.appendLine("elif("+Direction.ZNEGATIVE.label+" == False):");
+		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
+		writer.appendLine("end");
+		
+		writer.appendLine("if("+Direction.ZPOSITIVE.label+" == True):");
+		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.Z_Axis,0.3));
+		writer.appendLine("elif("+Direction.ZPOSITIVE.label+" == False):");
+		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
+		writer.appendLine("end");
+		
+		//----------------Y DIRECTION-------------------------------------------------------
+		writer.appendLine("if("+Direction.YNEGATIVE.label+" == True):");
+		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.Y_Axis,-0.3));
+		writer.appendLine("elif("+Direction.YNEGATIVE.label+" == False):");
+		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
+		writer.appendLine("end");
+		
+		writer.appendLine("if("+Direction.YPOSITIVE.label+" == True):");
+		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.Y_Axis,0.3));
+		writer.appendLine("elif("+Direction.YPOSITIVE.label+" == False):");
+		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
+		writer.appendLine("end");
+		
+		//----------------X DIRECTION-------------------------------------------------------
+		writer.appendLine("if("+Direction.XNEGATIVE.label+" == True):");
+		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.X_Axis,-0.3));
+		writer.appendLine("elif("+Direction.XNEGATIVE.label+" == False):");
+		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
+		writer.appendLine("end");
+		
+		writer.appendLine("if("+Direction.XPOSITIVE.label+" == True):");
+		writer.appendLine(robotMotionRequester.requestScriptRobotMove(Axis.X_Axis,0.3));
+		writer.appendLine("elif("+Direction.XPOSITIVE.label+" == False):");
+		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
 		writer.appendLine("end");
 		
 		writer.appendLine("sync()");
@@ -129,9 +150,6 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		writer.appendLine("end");
 		
 		
-		
-//		writer.appendLine("stopl(2)");
-
 	}
 
 	public MyDaemonInstallationNodeContribution getInstallation() {

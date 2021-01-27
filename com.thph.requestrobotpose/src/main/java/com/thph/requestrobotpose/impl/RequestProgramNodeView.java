@@ -154,13 +154,13 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 */
 	private void handleButtonEvents(final ContributionProvider<RequestProgramNodeContribution> provider) {
 
-		//TODO: remove provider
-		this.createChangeListener(buttonZNegative, Axis.Z_Axis, -0.3,provider);
-		this.createChangeListener(buttonZPositive, Axis.Z_Axis, 0.3,provider);
-		this.createChangeListener(buttonYNegative, Axis.Y_Axis, -0.3,provider);
-		this.createChangeListener(buttonYPositive, Axis.Y_Axis, 0.3,provider);
-		this.createChangeListener(buttonXNegative, Axis.X_Axis, -0.3,provider);
-		this.createChangeListener(buttonXPositive, Axis.X_Axis, 0.3,provider);
+		//TODO: without script-level --> remove provider and Direction
+		this.createChangeListener(buttonZNegative, Axis.Z_Axis, -0.3,provider, Direction.ZNEGATIVE.label);
+		this.createChangeListener(buttonZPositive, Axis.Z_Axis, 0.3,provider, Direction.ZPOSITIVE.label);
+		this.createChangeListener(buttonYNegative, Axis.Y_Axis, -0.3,provider, Direction.YNEGATIVE.label);
+		this.createChangeListener(buttonYPositive, Axis.Y_Axis, 0.3,provider, Direction.YPOSITIVE.label);
+		this.createChangeListener(buttonXNegative, Axis.X_Axis, -0.3,provider, Direction.XNEGATIVE.label);
+		this.createChangeListener(buttonXPositive, Axis.X_Axis, 0.3,provider,Direction.XPOSITIVE.label);
 
 		this.buttonOK.addChangeListener(new ChangeListener() {
 			@Override
@@ -183,13 +183,17 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 	}
 
+
+	//TODO: without script-level --> remove provider and Direction from method parameters
 	/**
-	 * Method for creating change listener for buttons.
-	 * 
+	 * Generic handlers for button event.
 	 * @param button
-	 * @param IONumber
+	 * @param axis
+	 * @param speed
+	 * @param provider
+	 * @param direction
 	 */
-	private void createChangeListener(final JButton button, final Axis axis, final double speed,final ContributionProvider<RequestProgramNodeContribution> provider) {
+	private void createChangeListener(final JButton button, final Axis axis, final double speed,final ContributionProvider<RequestProgramNodeContribution> provider, final String direction) {
 		button.getModel().addChangeListener(new ChangeListener() {
 
 			@Override
@@ -197,20 +201,20 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 				ButtonModel model = (ButtonModel) e.getSource();
 
-				//TODO: remove the provider logic and insert: robotMotionRequester.requestRobotMove(axis, speed);
+				//TODO: without script-level --> remove the provider logic and insert: robotMotionRequester.requestRobotMove(axis, speed);
 				if (model.isPressed()) {
 					try {
-						//TODO: add logic for all direction
-						provider.get().getInstallation().getXmlRpcDaemonInterface().setDirectionEnabled("zNegative", true);
+						provider.get().getInstallation().getXmlRpcDaemonInterface().setDirectionEnabled(direction, true);
 					} catch (XmlRpcException e1) {
 						e1.printStackTrace();
 					} catch (UnknownResponseException e1) {
 						e1.printStackTrace();
 					}
 				
+				//TODO: without script-level --> remove the provider logic and insert: robotMotionRequester.stopRobotMove();;
 				}else if(!model.isPressed()) {
 					try {
-						provider.get().getInstallation().getXmlRpcDaemonInterface().setDirectionEnabled("zNegative", false);
+						provider.get().getInstallation().getXmlRpcDaemonInterface().setDirectionEnabled(direction, false);
 					} catch (XmlRpcException e1) {
 						e1.printStackTrace();
 					} catch (UnknownResponseException e1) {

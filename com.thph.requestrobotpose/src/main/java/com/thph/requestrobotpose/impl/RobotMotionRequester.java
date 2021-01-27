@@ -60,6 +60,41 @@ public class RobotMotionRequester {
 		
 	}
 	
+	/**
+	 * Public method for generating the complete move script command.
+	 * @param axis
+	 * @param speed
+	 * @return
+	 */
+	public String requestScriptRobotMove(Axis axis, double speed) {
+		this.resetToolmap();
+		buildRobotMoveRequest(axis, speed);
+		String scriptCommand = generateScriptMoveCommand(ConvertToolMapToString(), getAcceleration(), getFuncionReturnTime());
+		return scriptCommand;
+	}
+	
+	/**
+	 * Method for generating the stop command for script level.
+	 * @return
+	 */
+	public String generateScriptStopCommand() {
+		String scriptCommand = "stopl("+ getStopAcceleration()+")" ;
+		return scriptCommand;
+	}
+	
+	/**
+	 * Method for generating the move command for script level.
+	 * @param tool_speed
+	 * @param acceleration
+	 * @param time
+	 * @return
+	 */
+	private String generateScriptMoveCommand(String tool_speed, double acceleration, double time) {
+		String scriptCommand = "speedl("+ tool_speed +","+ acceleration+","+time+")" ;
+		return scriptCommand;
+	}
+	
+	
 	public void stopRobotMove() {
 		ScriptSender sender = new ScriptSender();
 
@@ -80,6 +115,8 @@ public class RobotMotionRequester {
 		
 		sender.sendScriptCommand(senderCommand);
 	}
+	
+
 
 	public double getStopAcceleration() {
 		return stopAcceleration;
