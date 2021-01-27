@@ -34,6 +34,18 @@ public class XmlRPCdaemonInterface {
 		}
 	}
 	
+
+	public void setDirectionEnabled(String toolspeed, boolean enabled) throws XmlRpcException, UnknownResponseException {
+		Object[] params = new Object[] {toolspeed,enabled};
+		client.execute("setDirectionEnabled",params);
+	}
+	
+	public boolean getDirectionEnabled(String toolspeed) throws XmlRpcException, UnknownResponseException {
+		Object[] params = new Object[] {toolspeed};
+		Object result = client.execute("getDirectionEnabled",params);
+		
+		return processBoolean(result);
+	}
 	
 	
 	public boolean showPopup() throws XmlRpcException, UnknownResponseException {

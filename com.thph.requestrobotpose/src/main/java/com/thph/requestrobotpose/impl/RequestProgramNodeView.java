@@ -154,27 +154,25 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 */
 	private void handleButtonEvents(final ContributionProvider<RequestProgramNodeContribution> provider) {
 
-		this.createChangeListener(buttonZNegative, Axis.Z_Axis, -0.3);
-		this.createChangeListener(buttonZPositive, Axis.Z_Axis, 0.3);
-		this.createChangeListener(buttonYNegative, Axis.Y_Axis, -0.3);
-		this.createChangeListener(buttonYPositive, Axis.Y_Axis, 0.3);
-		this.createChangeListener(buttonXNegative, Axis.X_Axis, -0.3);
-		this.createChangeListener(buttonXPositive, Axis.X_Axis, 0.3);
+		//TODO: remove provider
+		this.createChangeListener(buttonZNegative, Axis.Z_Axis, -0.3,provider);
+		this.createChangeListener(buttonZPositive, Axis.Z_Axis, 0.3,provider);
+		this.createChangeListener(buttonYNegative, Axis.Y_Axis, -0.3,provider);
+		this.createChangeListener(buttonYPositive, Axis.Y_Axis, 0.3,provider);
+		this.createChangeListener(buttonXNegative, Axis.X_Axis, -0.3,provider);
+		this.createChangeListener(buttonXPositive, Axis.X_Axis, 0.3,provider);
 
 		this.buttonOK.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 
-//				robotMotionRequester.stopRobotMove();
 				try {
 					provider.get().getInstallation().getXmlRpcDaemonInterface().cancelPopup();
 					provider.get().setPopupStillEnabled(false);
 
 				} catch (XmlRpcException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (UnknownResponseException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				
@@ -191,7 +189,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 * @param button
 	 * @param IONumber
 	 */
-	private void createChangeListener(final JButton button, final Axis axis, final double speed) {
+	private void createChangeListener(final JButton button, final Axis axis, final double speed,final ContributionProvider<RequestProgramNodeContribution> provider) {
 		button.getModel().addChangeListener(new ChangeListener() {
 
 			@Override
@@ -199,8 +197,25 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 				ButtonModel model = (ButtonModel) e.getSource();
 
-				if (model.isEnabled()) {
-					robotMotionRequester.requestRobotMove(axis, speed);
+				//TODO: remove the provider logic and insert: robotMotionRequester.requestRobotMove(axis, speed);
+				if (model.isPressed()) {
+					try {
+						//TODO: add logic for all direction
+						provider.get().getInstallation().getXmlRpcDaemonInterface().setDirectionEnabled("zNegative", true);
+					} catch (XmlRpcException e1) {
+						e1.printStackTrace();
+					} catch (UnknownResponseException e1) {
+						e1.printStackTrace();
+					}
+				
+				}else if(!model.isPressed()) {
+					try {
+						provider.get().getInstallation().getXmlRpcDaemonInterface().setDirectionEnabled("zNegative", false);
+					} catch (XmlRpcException e1) {
+						e1.printStackTrace();
+					} catch (UnknownResponseException e1) {
+						e1.printStackTrace();
+					}
 				}
 
 			}

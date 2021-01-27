@@ -23,22 +23,23 @@ xPositive = False
 def setDirectionEnabled(toolspeed,enabled):
   if toolspeed == "zNegative":
     global zNegative
-    zNegative = True
+    zNegative = enabled
   if toolspeed == "zPositive":
     global zPositive
-    zPositive = True
+    zPositive = enabled
   if toolspeed == "yNegative":
     global yNegative
-    yNegative = True
+    yNegative = enabled
   if toolspeed == "yPositive":
     global yPositive
-    yPositive = True
+    yPositive = enabled
   if toolspeed == "xNegative":
     global xNegative
-    xNegative = True
+    xNegative = enabled
   if toolspeed == "xPositive":
     global xPositive
-    xPositive = True
+    xPositive = enabled
+  return True
 
 def getDirectionEnabled(toolspeed):
   if toolspeed == "zNegative":
