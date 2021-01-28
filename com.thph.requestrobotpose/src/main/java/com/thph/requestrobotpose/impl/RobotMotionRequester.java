@@ -90,6 +90,8 @@ public class RobotMotionRequester {
 	 * @return
 	 */
 	private String generateScriptMoveCommand(String tool_speed, double acceleration, double time) {
+		//TODO: Ebbe
+		//TODO: pose_trans(feature,toolspeed) --> feature choice on popup.
 		String scriptCommand = "speedl("+ tool_speed +","+ acceleration+","+time+")" ;
 		return scriptCommand;
 	}
