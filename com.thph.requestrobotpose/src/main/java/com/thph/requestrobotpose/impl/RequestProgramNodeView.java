@@ -5,11 +5,14 @@ import com.thph.requestrobotpose.impl.servicedaemon.UnknownResponseException;
 import com.ur.style.URSpacingSize;
 import com.ur.style.components.URButtons;
 import com.ur.style.components.URSpacing;
+import com.ur.style.components.URTextFields;
 import com.ur.test.PreviewUI;
 import com.ur.urcap.api.contribution.ContributionProvider;
 import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeView;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -21,16 +24,20 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
 public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgramNodeContribution> {
 
 	final JPopupMenu popup = new JPopupMenu();
-
 	private JPanel programnnodeViewPanel;
 
 	// Initiate command sender.
@@ -50,6 +57,17 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	JButton buttonYPositive = urButtons.getSmallButtonEnabled("Y+", 100);
 	JButton buttonYNegative = urButtons.getSmallButtonEnabled("Y-", 100);
 	JButton buttonOK = urButtons.getSmallButtonEnabled("OK", 100);
+	
+	//Buttoon Image path
+	private static final String IMAGE_ZNEGATIVE = "/image/positionznegative.png";
+	private static final String IMAGE_ZPOSITIVE = "/image/positionzpositive.png";
+	private static final String IMAGE_YNEGATIVE = "/image/positionynegative.png";
+	private static final String IMAGE_YPOSITIVE = "/image/positionypositive.png";
+	private static final String IMAGE_XNEGATIVE = "/image/positionxnegative.png";
+	private static final String IMAGE_XPOSITIVE = "/image/positionxpositive.png";
+
+	JTextArea infobox = new JTextArea();
+	
 
 	@Override
 	public void buildUI(JPanel panel, ContributionProvider<RequestProgramNodeContribution> provider) {
@@ -59,6 +77,11 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 	}
 
+	/**
+	 * Method for activating the popup. 
+	 * Calls by the RequestProgramNodeConribution class in openview method.
+	 * @param panel
+	 */
 	public void openPopopView(JPanel panel) {
 		buttonOK.getModel().setPressed(false);
 		popup.show(panel, panel.getWidth() / 4, 0);
@@ -88,6 +111,17 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 		return box;
 	}
+	
+	private void addImageToButtons() {
+		this.buttonZNegative.setIcon(createImageIcon(IMAGE_ZNEGATIVE));
+		this.buttonZPositive.setIcon(createImageIcon(IMAGE_ZPOSITIVE));
+		this.buttonYNegative.setIcon(createImageIcon(IMAGE_YNEGATIVE));
+		this.buttonYPositive.setIcon(createImageIcon(IMAGE_YPOSITIVE));
+		this.buttonXNegative.setIcon(createImageIcon(IMAGE_XNEGATIVE));
+		this.buttonXPositive.setIcon(createImageIcon(IMAGE_XPOSITIVE));
+	}
+	
+	
 
 	/**
 	 * Creates a box with five buttons.
@@ -95,6 +129,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 * @return
 	 */
 	private Box createButtons() {
+		
 		Box box = Box.createVerticalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -240,6 +275,28 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 	private void setProgramnnodeViewPanel(JPanel programnnodeViewPanel) {
 		this.programnnodeViewPanel = programnnodeViewPanel;
+	}
+	
+	/**
+	 * Creates an imageicon based on the path.
+	 * Images must be located in the resources map of the project.
+	 * @param path
+	 * @return image icon.
+	 */
+	private ImageIcon createImageIcon(String path) {
+		ImageIcon icon = null;
+		try {
+			BufferedImage imgURL = ImageIO.read(getClass().getResourceAsStream(path));
+
+			if (imgURL != null) {
+				icon = new ImageIcon(imgURL);
+
+			}
+		} catch (IOException e) {
+			System.out.println("NO IMAGE FOUND");
+		}
+
+		return icon;
 	}
 
 }
