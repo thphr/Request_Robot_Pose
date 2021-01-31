@@ -97,6 +97,7 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		writer.appendLine("while(isEnabled == True):");
 		writer.assign("isEnabled", getInstallation().getXMLRPCVariable() + ".isEnabled()");
 
+		//TCP position
 		writer.assign(Direction.ZNEGATIVE.label,
 				getInstallation().getXMLRPCVariable() + ".getDirectionEnabled(\"" + Direction.ZNEGATIVE.label + "\")");
 		writer.assign(Direction.ZPOSITIVE.label,
@@ -110,15 +111,36 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		writer.assign(Direction.XPOSITIVE.label,
 				getInstallation().getXMLRPCVariable() + ".getDirectionEnabled(\"" + Direction.XPOSITIVE.label + "\")");
 		
+		//TCP orientation
+		writer.assign(Direction.RZNEGATIVE.label,
+				getInstallation().getXMLRPCVariable() + ".getDirectionEnabled(\"" + Direction.RZNEGATIVE.label + "\")");
+		writer.assign(Direction.RZPOSITIVE.label,
+				getInstallation().getXMLRPCVariable() + ".getDirectionEnabled(\"" + Direction.RZPOSITIVE.label + "\")");
+		writer.assign(Direction.RYNEGATIVE.label,
+				getInstallation().getXMLRPCVariable() + ".getDirectionEnabled(\"" + Direction.RYNEGATIVE.label + "\")");
+		writer.assign(Direction.RYPOSITIVE.label,
+				getInstallation().getXMLRPCVariable() + ".getDirectionEnabled(\"" + Direction.RYPOSITIVE.label + "\")");
+		writer.assign(Direction.RXNEGATIVE.label,
+				getInstallation().getXMLRPCVariable() + ".getDirectionEnabled(\"" + Direction.RXNEGATIVE.label + "\")");
+		writer.assign(Direction.RXPOSITIVE.label,
+				getInstallation().getXMLRPCVariable() + ".getDirectionEnabled(\"" + Direction.RXPOSITIVE.label + "\")");
 		
+		//TCP position
 		setDirection(writer, Direction.ZNEGATIVE.label, Axis.Z_Axis, -0.3);
 		setDirection(writer, Direction.ZPOSITIVE.label, Axis.Z_Axis, 0.3);
 		setDirection(writer, Direction.YNEGATIVE.label, Axis.Y_Axis, -0.3);
 		setDirection(writer, Direction.YPOSITIVE.label, Axis.Y_Axis, 0.3);
 		setDirection(writer, Direction.XNEGATIVE.label, Axis.X_Axis, -0.3);
 		setDirection(writer, Direction.XPOSITIVE.label, Axis.X_Axis, 0.3);
+		
+		//TCP orientation
+		setDirection(writer, Direction.RZNEGATIVE.label, Axis.RZ_Axis, -0.3);
+		setDirection(writer, Direction.RZPOSITIVE.label, Axis.RZ_Axis, 0.3);
+		setDirection(writer, Direction.RYNEGATIVE.label, Axis.RY_Axis, -0.3);
+		setDirection(writer, Direction.RYPOSITIVE.label, Axis.RY_Axis, 0.3);
+		setDirection(writer, Direction.RXNEGATIVE.label, Axis.RX_Axis, -0.3);
+		setDirection(writer, Direction.RXPOSITIVE.label, Axis.RX_Axis, 0.3);
 		 
-
 		writer.appendLine("sync()");
 		writer.sleep(0.3);
 		writer.appendLine("textmsg(\"test\")");
@@ -133,7 +155,6 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		writer.appendLine("end");
 	}
 	
-	//TODO:
 
 	public MyDaemonInstallationNodeContribution getInstallation() {
 		return apiProvider.getProgramAPI().getInstallationNode(MyDaemonInstallationNodeContribution.class);

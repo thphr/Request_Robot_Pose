@@ -49,7 +49,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	URSpacing urSpacing = new URSpacing();
 	URSpacingSize urSpacingSize = new URSpacingSize();
 
-	// Create buttons
+	// Create TPC position buttons
 	JButton buttonZNegative = urButtons.getSmallButtonEnabled("Z-", 100);
 	JButton buttonZPositive = urButtons.getSmallButtonEnabled("Z+", 100);
 	JButton buttonXNegative = urButtons.getSmallButtonEnabled("X-", 100);
@@ -57,6 +57,14 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	JButton buttonYPositive = urButtons.getSmallButtonEnabled("Y+", 100);
 	JButton buttonYNegative = urButtons.getSmallButtonEnabled("Y-", 100);
 	JButton buttonOK = urButtons.getSmallButtonEnabled("OK", 100);
+	
+	// Create TPC orientation buttons
+	JButton buttonRZNegative = urButtons.getSmallButtonEnabled("RZ-", 100);
+	JButton buttonRZPositive = urButtons.getSmallButtonEnabled("RZ+", 100);
+	JButton buttonRXNegative = urButtons.getSmallButtonEnabled("RX-", 100);
+	JButton buttonRXPositive = urButtons.getSmallButtonEnabled("RX+", 100);
+	JButton buttonRYPositive = urButtons.getSmallButtonEnabled("RY+", 100);
+	JButton buttonRYNegative = urButtons.getSmallButtonEnabled("RY-", 100);
 	
 	//Buttoon Image path
 	private static final String IMAGE_ZNEGATIVE = "/image/positionznegative.png";
@@ -99,7 +107,8 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		
 		// Create a jpanel with a title.
 		JPanel jpanel = previewUI.AddComponentsToUI("Popup");
-		jpanel.add(createButtons());
+		jpanel.add(createTPCpositionButtons());
+		jpanel.add(createTCPorientationButtons());
 		
 		// Calls the button handler.
 		this.handleButtonEvents(provider);
@@ -124,11 +133,11 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	
 
 	/**
-	 * Creates a box with five buttons.
+	 * Creates a box with five TCP position buttons.
 	 * 
-	 * @return
+	 * @return Box containing the buttons.
 	 */
-	private Box createButtons() {
+	private Box createTPCpositionButtons() {
 		
 		Box box = Box.createVerticalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -141,8 +150,6 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 		Box boxY = Box.createHorizontalBox();
 
-		Box boxSTOP = Box.createHorizontalBox();
-
 		boxZ.add(buttonZPositive);
 		boxZ.add(createCustomizedHorizontalSpacing(100));
 		boxZ.add(buttonZNegative);
@@ -153,23 +160,69 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		boxXPostive.add(createCustomizedHorizontalSpacing(1));
 		boxXPostive.add(buttonXPositive);
 
-		boxSTOP.add(createCustomizedHorizontalSpacing(200));
-		boxSTOP.add(buttonOK);
-
 		boxY.add(buttonYNegative);
 		boxY.add(createCustomizedHorizontalSpacing(100));
 		boxY.add(buttonYPositive);
 
 		box.add(boxZ);
-		box.add(urSpacing.createVerticalSpacing(50));
+		box.add(urSpacing.createVerticalSpacing(20));
 		box.add(boxXNegative);
-		box.add(urSpacing.createVerticalSpacing(50));
+		box.add(urSpacing.createVerticalSpacing(20));
 		box.add(boxY);
-		box.add(urSpacing.createVerticalSpacing(50));
+		box.add(urSpacing.createVerticalSpacing(20));
 		box.add(boxXPostive);
 		box.add(urSpacing.createVerticalSpacing(50));
-		box.add(boxSTOP);
 
+		return box;
+	}
+	
+
+	/**
+	 * Creates a box with five TCP orientation buttons.
+	 * 
+	 * @return Box containing the buttons.
+	 */
+	private Box createTCPorientationButtons() {
+		Box box = Box.createVerticalBox();
+		box.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		Box boxRYNegative = Box.createHorizontalBox();
+
+		Box boxRYPostive = Box.createHorizontalBox();
+
+		Box boxZ = Box.createHorizontalBox();
+
+		Box boxX = Box.createHorizontalBox();
+
+		Box boxSTOP = Box.createHorizontalBox();
+
+		boxZ.add(buttonRZPositive);
+		boxZ.add(createCustomizedHorizontalSpacing(100));
+		boxZ.add(buttonRZNegative);
+
+		boxRYNegative.add(createCustomizedHorizontalSpacing(1));
+		boxRYNegative.add(buttonRYNegative);
+
+		boxRYPostive.add(createCustomizedHorizontalSpacing(1));
+		boxRYPostive.add(buttonRYPositive);
+
+		boxSTOP.add(createCustomizedHorizontalSpacing(200));
+		boxSTOP.add(buttonOK);
+
+		boxX.add(buttonRXNegative);
+		boxX.add(createCustomizedHorizontalSpacing(100));
+		boxX.add(buttonRXPositive);
+
+		box.add(boxZ);
+		box.add(urSpacing.createVerticalSpacing(20));
+		box.add(boxRYNegative);
+		box.add(urSpacing.createVerticalSpacing(20));
+		box.add(boxX);
+		box.add(urSpacing.createVerticalSpacing(20));
+		box.add(boxRYPostive);
+		box.add(urSpacing.createVerticalSpacing(20));
+		box.add(boxSTOP);
+		
 		return box;
 	}
 
@@ -179,13 +232,24 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	private void handleButtonEvents(final ContributionProvider<RequestProgramNodeContribution> provider) {
 
 		// TODO: without script-level --> remove provider and Direction
+		
+		//Button listener for TCP position buttons.
 		this.createChangeListener(buttonZNegative, Axis.Z_Axis, -0.3, provider, Direction.ZNEGATIVE.label);
 		this.createChangeListener(buttonZPositive, Axis.Z_Axis, 0.3, provider, Direction.ZPOSITIVE.label);
 		this.createChangeListener(buttonYNegative, Axis.Y_Axis, -0.3, provider, Direction.YNEGATIVE.label);
 		this.createChangeListener(buttonYPositive, Axis.Y_Axis, 0.3, provider, Direction.YPOSITIVE.label);
 		this.createChangeListener(buttonXNegative, Axis.X_Axis, -0.3, provider, Direction.XNEGATIVE.label);
 		this.createChangeListener(buttonXPositive, Axis.X_Axis, 0.3, provider, Direction.XPOSITIVE.label);
+		
+		//Button listener for TCP orientation buttons.
+		this.createChangeListener(buttonRZNegative, Axis.RZ_Axis, -0.3, provider, Direction.RZNEGATIVE.label);
+		this.createChangeListener(buttonRZPositive, Axis.RZ_Axis, 0.3, provider, Direction.RZPOSITIVE.label);
+		this.createChangeListener(buttonRYNegative, Axis.RY_Axis, -0.3, provider, Direction.RYNEGATIVE.label);
+		this.createChangeListener(buttonRYPositive, Axis.RY_Axis, 0.3, provider, Direction.RYPOSITIVE.label);
+		this.createChangeListener(buttonRXNegative, Axis.RX_Axis, -0.3, provider, Direction.RXNEGATIVE.label);
+		this.createChangeListener(buttonRXPositive, Axis.RX_Axis, 0.3, provider, Direction.RXPOSITIVE.label);
 
+		//Button listener for OK buttons.
 		this.buttonOK.getModel().addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {

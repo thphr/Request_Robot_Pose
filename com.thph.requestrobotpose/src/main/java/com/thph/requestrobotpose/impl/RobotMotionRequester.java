@@ -20,7 +20,11 @@ public class RobotMotionRequester {
 	public enum Axis{
 		Z_Axis,
 		Y_Axis,
-		X_Axis
+		X_Axis,
+		RZ_Axis,
+		RY_Axis,
+		RX_Axis
+		
 	}
 	
 	
@@ -32,33 +36,62 @@ public class RobotMotionRequester {
 		setFuncionReturnTime(0.5);
 	}
 	
+	/**
+	 * Method to indicate which index of the toolspeed map 
+	 * to modify based on the TCP vector [X, Y, Z, Rx, Ry, Rz].
+	 */
 	private void setupAxisToToolMap() {
 		AxisToToolMap.put(Axis.Z_Axis, 2);
+		
+		AxisToToolMap.put(Axis.Y_Axis, 1);	
 	
 		AxisToToolMap.put(Axis.X_Axis, 0);
+		
+		
+		AxisToToolMap.put(Axis.RZ_Axis, 5);
 	
-		AxisToToolMap.put(Axis.Y_Axis, 1);		
+		AxisToToolMap.put(Axis.RY_Axis, 4);
+		
+		AxisToToolMap.put(Axis.RX_Axis, 3);
 	}
 	
+	/**
+	 * The toolspeed map based on 
+	 * TCP vector [X, Y, Z, Rx, Ry, Rz]
+	 */
 	private void resetToolmap() {
 		tool_speed_map = new double[] {0.0,0.0,0.0,0.0,0.0,0.0};
 	}
 	 
+	/**
+	 * Mapping the axis to the speed.
+	 * @param axis
+	 * @param speed
+	 */
 	private void buildRobotMoveRequest(Axis axis, double speed) {
 		tool_speed_map[AxisToToolMap.get(axis)] = speed;
 	}
 	
+	
+	/**
+	 * Converts the toolspeed map to string.
+	 * @return a string of the toolspeed: TCP vector [X, Y, Z, Rx, Ry, Rz]
+	 */
 	private String ConvertToolMapToString() {
 		return Arrays.toString(tool_speed_map);
 	}
 	
 	
+	/**
+	 * Moves the robot based on the requested axis and speed
+	 * by sending the script command to robot port over socket.
+	 * @param axis
+	 * @param speed
+	 */
 	public void requestRobotMove(Axis axis, double speed) {
 		this.resetToolmap();
 		buildRobotMoveRequest(axis, speed);
 		moveRobot(ConvertToolMapToString(), getAcceleration(), getFuncionReturnTime());
-		
-		
 	}
 	
 	/**
