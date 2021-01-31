@@ -132,6 +132,8 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
 		writer.appendLine("end");
 	}
+	
+	//TODO:
 
 	public MyDaemonInstallationNodeContribution getInstallation() {
 		return apiProvider.getProgramAPI().getInstallationNode(MyDaemonInstallationNodeContribution.class);
