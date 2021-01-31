@@ -90,15 +90,20 @@ public class RobotMotionRequester {
 	 * @param time
 	 * @return
 	 */
-	private String generateScriptMoveCommand(String tool_speed, double acceleration, double time, Pose feature) {
-		String feature_name = "feature_rot";
-		String scriptCommand = "local "+feature_name+"="+feature.toString(); 
-		scriptCommand += feature_name+"[0]=0";
-		scriptCommand += feature_name+"[1]=0";
-		scriptCommand += feature_name+"[2]=0";
-		scriptCommand += "speedl(pose_trans(feature_rot,"+ tool_speed +"),"+ acceleration+","+time+")" ;
-		return scriptCommand;
+	private String generateScriptMoveCommand(String tool_speed, double acceleration, double time) {
+		String scriptcommand = "speedl("+ tool_speed +","+ acceleration+","+time+")";
+		return scriptcommand;
 	}
+//	private String generateScriptMoveCommand(String tool_speed, double acceleration, double time, Pose feature) {
+//		String feature_name = "feature_rot";
+//		String scriptCommand = "local "+feature_name+"="+feature.toString(); 
+//		scriptCommand += feature_name+"[0]=0";
+//		scriptCommand += feature_name+"[1]=0";
+//		scriptCommand += feature_name+"[2]=0";
+//		scriptCommand += "speedl(pose_trans(feature_rot,"+ tool_speed +"),"+ acceleration+","+time+")" ;
+//		return scriptCommand;
+//	}
+	
 	
 	
 	public void stopRobotMove() {
