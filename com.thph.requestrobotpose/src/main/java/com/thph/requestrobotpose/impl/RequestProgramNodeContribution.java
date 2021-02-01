@@ -15,6 +15,9 @@ import com.ur.urcap.api.contribution.program.CreationContext;
 import com.ur.urcap.api.domain.ProgramAPI;
 import com.ur.urcap.api.domain.data.DataModel;
 import com.ur.urcap.api.domain.script.ScriptWriter;
+import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputCallback;
+import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputFactory;
+import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardTextInput;
 
 public class RequestProgramNodeContribution implements ProgramNodeContribution {
 
@@ -22,6 +25,7 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	private final ProgramAPIProvider apiProvider;
 	private final RequestProgramNodeView view;
 	private final DataModel model;
+	private final KeyboardInputFactory keyboardFactory;
 
 	private RobotMotionRequester robotMotionRequester;
 
@@ -34,6 +38,7 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 
 		this.programAPI = apiProvider.getProgramAPI();
 		this.apiProvider = apiProvider;
+		this.keyboardFactory = apiProvider.getUserInterfaceAPI().getUserInteraction().getKeyboardInputFactory();
 		this.view = view;
 		this.model = model;
 		this.isPopupStillEnabled = false;
@@ -147,6 +152,40 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		writer.appendLine("end");
 
 	}
+
+	public KeyboardTextInput getKeyboardForAssignmentInput() {
+		KeyboardTextInput keyboardInput = keyboardFactory.createStringKeyboardInput();
+		keyboardInput.setInitialValue("Enter");
+		return keyboardInput;
+	}
+
+	public KeyboardInputCallback<String> getCallbackForAssignmentInput() {
+		return new KeyboardInputCallback<String>() {
+			@Override
+			public void onOk(String value) {
+				view.setAssignmentInputText(value);
+			}
+		};
+	}
+	
+	public KeyboardTextInput getKeyboardForPopupInput() {
+		KeyboardTextInput keyboardInput = keyboardFactory.createStringKeyboardInput();
+		keyboardInput.setInitialValue("Enter");
+		return keyboardInput;
+	}
+
+	public KeyboardInputCallback<String> getCallbackForPopupInput() {
+		return new KeyboardInputCallback<String>() {
+			@Override
+			public void onOk(String value) {
+				view.setPopupInputText(value);
+			}
+		};
+	}
+	
+	
+	
+	
 	private void setDirection(ScriptWriter writer, String directionlabel, Axis axis, double speed) {
 		writer.appendLine("if(" + directionlabel + " == True):");
 		writer.appendLine(robotMotionRequester.requestScriptRobotMove(axis, speed));
