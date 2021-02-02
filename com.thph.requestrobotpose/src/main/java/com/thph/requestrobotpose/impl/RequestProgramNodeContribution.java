@@ -1,6 +1,7 @@
 package com.thph.requestrobotpose.impl;
 
 import java.awt.EventQueue;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -26,6 +27,9 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	private static final String POPUP_TEXT = "popup";
 	private static final String ASSIGNMENT_VARIABLE = "variable";
 
+	private static final String ASSIGMENT_CHOICE = "assignment_choice";
+	private static final String DEFAUTL_ASSIGMENT_CHOICE = "pose";
+
 	private static final String DEFAULT_POPUP_TEXT = "default_popup";
 	private static final String DEFAULT_ASSIGNMENT_VARIABLE = "default_variable";
 
@@ -42,6 +46,8 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 
 	private Timer uiTimer;
 
+	private HashMap<String, String> assignemntMap = new HashMap<String, String>();
+
 	public RequestProgramNodeContribution(ProgramAPIProvider apiProvider, RequestProgramNodeView view, DataModel model,
 			CreationContext context) {
 
@@ -57,8 +63,15 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 
 	}
 
+	private void initMap() {
+		assignemntMap.clear();
+		assignemntMap.put("pose", "get_actual_tcp_pose()");
+		assignemntMap.put("speed", "get_actual_tcp_speed()");
+	}
+
 	@Override
 	public void openView() {
+		this.initMap();
 		uiTimer = new Timer(true);
 		uiTimer.schedule(new TimerTask() {
 			@Override
@@ -162,6 +175,21 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		writer.appendLine("textmsg(\"test\")");
 		writer.appendLine("end");
 
+		// Assignment of the pose when the OK button is pressed.
+		assignVariable(writer, model.get(ASSIGNMENT_VARIABLE, DEFAULT_ASSIGNMENT_VARIABLE), model.get(ASSIGMENT_CHOICE, DEFAUTL_ASSIGMENT_CHOICE));
+
+	}
+
+	/**
+	 * Method for assigning a variable for the chosen assignment option.
+	 * 
+	 * @param writer
+	 * @param assignment_choice
+	 */
+	private void assignVariable(ScriptWriter writer, String assignment_variable, String assignment_choice) {
+		writer.appendLine("if(isEnabled != True):");
+		writer.assign(assignment_variable, assignemntMap.get(assignment_choice));
+		writer.appendLine("end");
 	}
 
 	/**
@@ -189,7 +217,7 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 				undoRedoManager.recordChanges(new UndoableChanges() {
 					@Override
 					public void executeChanges() {
-						
+
 						model.set(ASSIGNMENT_VARIABLE, value);
 					}
 				});
@@ -219,7 +247,7 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 			@Override
 			public void onOk(final String value) {
 				view.setPopupInputText(value);
-				
+
 				undoRedoManager.recordChanges(new UndoableChanges() {
 					@Override
 					public void executeChanges() {
@@ -250,5 +278,13 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		return isPopupStillEnabled;
 	}
 
+	public void setAssignmentChoiceModel(final String value) {
+		undoRedoManager.recordChanges(new UndoableChanges() {
+			@Override
+			public void executeChanges() {
+				model.set(ASSIGMENT_CHOICE, value);
+			}
+		});
+	}
 
 }

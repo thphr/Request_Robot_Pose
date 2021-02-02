@@ -30,6 +30,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -98,8 +100,9 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	JLabel assignmentLabel = new JLabel("Assign variable:");
 	JLabel equalLabel = new JLabel(":=");
 
+	//TODO: consider to change these to other than string.
 	String[] featureValues = { "Base", "Tool" };
-	String[] assigmentValues = { "Pose" };
+	String[] assigmentValues = { "pose","speed"};
 	JComboBox featureDropdown = urDropdowns.getDropDownEnabled(100);
 	JComboBox assignmentDropdown = urDropdowns.getDropDownEnabled(100);
 
@@ -175,6 +178,36 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 		featureDropdown.setModel(new DefaultComboBoxModel<String>(featureValues));
 		assignmentDropdown.setModel(new DefaultComboBoxModel<String>(assigmentValues));
+		
+		featureDropdown.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+
+				if (arg0.getStateChange() == ItemEvent.SELECTED) {
+
+					String value = (String) arg0.getItem();
+					
+					//TODO: call the relevant feature setter method.
+
+				}
+			}
+		});
+		
+		assignmentDropdown.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+
+				if (arg0.getStateChange() == ItemEvent.SELECTED) {
+
+					String value = (String) arg0.getItem();
+					
+					provider.get().setAssignmentChoiceModel(value);
+
+				}
+			}
+		});
 
 		assignmentInput.addMouseListener(new MouseAdapter() {
 			@Override
