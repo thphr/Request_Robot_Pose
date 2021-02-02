@@ -64,6 +64,9 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	URSpacing urSpacing = new URSpacing();
 	URSpacingSize urSpacingSize = new URSpacingSize();
 
+	//popup panel
+	JLabel labelonPopup = new JLabel();
+	
 	// Create TPC position buttons
 	JButton buttonZNegative = urButtons.getSmallButtonEnabled("Z-", 100);
 	JButton buttonZPositive = urButtons.getSmallButtonEnabled("Z+", 100);
@@ -100,9 +103,10 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	JComboBox featureDropdown = urDropdowns.getDropDownEnabled(100);
 	JComboBox assignmentDropdown = urDropdowns.getDropDownEnabled(100);
 
-	JTextField assignmentInput = urTextFields.getTextFieldEnabled(100);
-	JTextField popupInput = urTextFields.getTextFieldEnabled(100);
+	JTextField assignmentInput = urTextFields.getTextFieldEnabled(200);
+	JTextField popupInput = urTextFields.getTextFieldEnabled(300);
 
+	//TODO: currently unused - serve no purpose
 	JButton popupButton = urButtons.getSmallButtonEnabled("OK", 50);
 
 	@Override
@@ -231,8 +235,12 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 */
 	private Box createTPCpositionButtons() {
 
+		labelonPopup.setHorizontalAlignment(SwingConstants.LEFT);
+		
 		Box box = Box.createVerticalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		Box boxPopupLabel = Box.createHorizontalBox();
 
 		Box boxXNegative = Box.createHorizontalBox();
 
@@ -241,6 +249,8 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		Box boxZ = Box.createHorizontalBox();
 
 		Box boxY = Box.createHorizontalBox();
+		
+		boxPopupLabel.add(labelonPopup);
 
 		boxZ.add(buttonZPositive);
 		boxZ.add(createCustomizedHorizontalSpacing(100));
@@ -256,6 +266,8 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		boxY.add(createCustomizedHorizontalSpacing(100));
 		boxY.add(buttonYPositive);
 
+		box.add(boxPopupLabel);
+		box.add(urSpacing.createVerticalSpacing(50));
 		box.add(boxZ);
 		box.add(urSpacing.createVerticalSpacing(20));
 		box.add(boxXNegative);
@@ -432,12 +444,32 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		this.programnnodeViewPanel = programnnodeViewPanel;
 	}
 	
+	/**
+	 * Sets the name of the varible 
+	 * for assigning value to.
+	 * @param text
+	 */
 	public void setAssignmentInputText(String text) {
 		assignmentInput.setText(text);
 	}
 	
+	/**
+	 * Sets the text on the input text field for 
+	 * displaying on the popup
+	 * @param text
+	 */
 	public void setPopupInputText(String text) {
 		popupInput.setText(text);
+	}
+	
+	
+	/**
+	 * Sets the text on the popup during 
+	 * the program execution.
+	 * @param text
+	 */
+	public void setTextOnShowingPopup(String text) {
+		labelonPopup.setText(text);
 	}
 
 	/**
