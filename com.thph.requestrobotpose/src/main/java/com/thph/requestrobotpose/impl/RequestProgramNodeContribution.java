@@ -15,12 +15,14 @@ import com.ur.urcap.api.contribution.program.ProgramAPIProvider;
 import com.ur.urcap.api.contribution.program.CreationContext;
 import com.ur.urcap.api.domain.ProgramAPI;
 import com.ur.urcap.api.domain.data.DataModel;
+import com.ur.urcap.api.domain.feature.FeatureModel;
 import com.ur.urcap.api.domain.script.ScriptWriter;
 import com.ur.urcap.api.domain.undoredo.UndoRedoManager;
 import com.ur.urcap.api.domain.undoredo.UndoableChanges;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputCallback;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputFactory;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardTextInput;
+import com.ur.urcap.api.domain.value.Pose;
 
 public class RequestProgramNodeContribution implements ProgramNodeContribution {
 
@@ -29,6 +31,9 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 
 	private static final String ASSIGMENT_CHOICE = "assignment_choice";
 	private static final String DEFAUTL_ASSIGMENT_CHOICE = "pose";
+
+	private static final String SELECTED_FEATURE = "selected_feature";
+	private static final String DEFAULT_SELECTED_FEATURE = "Base";
 
 	private static final String DEFAULT_POPUP_TEXT = "default_popup";
 	private static final String DEFAULT_ASSIGNMENT_VARIABLE = "default_variable";
@@ -39,6 +44,7 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	private final DataModel model;
 	private final KeyboardInputFactory keyboardFactory;
 	private final UndoRedoManager undoRedoManager;
+	private final FeatureModel featuremodel;
 
 	private RobotMotionRequester robotMotionRequester;
 
@@ -53,6 +59,7 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 
 		this.programAPI = apiProvider.getProgramAPI();
 		this.apiProvider = apiProvider;
+		this.featuremodel = apiProvider.getProgramAPI().getFeatureModel();
 		this.keyboardFactory = apiProvider.getUserInterfaceAPI().getUserInteraction().getKeyboardInputFactory();
 		this.undoRedoManager = apiProvider.getProgramAPI().getUndoRedoManager();
 		this.view = view;
@@ -176,7 +183,8 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		writer.appendLine("end");
 
 		// Assignment of the pose when the OK button is pressed.
-		assignVariable(writer, model.get(ASSIGNMENT_VARIABLE, DEFAULT_ASSIGNMENT_VARIABLE), model.get(ASSIGMENT_CHOICE, DEFAUTL_ASSIGMENT_CHOICE));
+		assignVariable(writer, model.get(ASSIGNMENT_VARIABLE, DEFAULT_ASSIGNMENT_VARIABLE),
+				model.get(ASSIGMENT_CHOICE, DEFAUTL_ASSIGMENT_CHOICE));
 
 	}
 
@@ -193,6 +201,23 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	}
 
 	/**
+	 * Movethe robot based on the triggered button with the corresponding moving
+	 * direction and stops the robot when the button is longer pressed down.
+	 * 
+	 * @param writer
+	 * @param directionlabel
+	 * @param axis
+	 * @param speed
+	 */
+	private void setDirection(ScriptWriter writer, String directionlabel, Axis axis, double speed) {
+		writer.appendLine("if(" + directionlabel + " == True):");
+		writer.appendLine(robotMotionRequester.requestScriptRobotMove(axis, speed, getPoseBasedOnFeature()));
+		writer.appendLine("elif(" + directionlabel + " == False):");
+		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
+		writer.appendLine("end");
+	}
+
+	/**
 	 * Triggers a keyboard on the assignment input field.
 	 * 
 	 * @return
@@ -201,6 +226,24 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		KeyboardTextInput keyboardInput = keyboardFactory.createStringKeyboardInput();
 		keyboardInput.setInitialValue("Default");
 		return keyboardInput;
+	}
+
+	private Pose getPoseBasedOnFeature() {
+		String feature = model.get(SELECTED_FEATURE, DEFAULT_SELECTED_FEATURE);
+		Pose pose = null;
+
+		if (feature.equals("Base")) {
+
+			pose = featuremodel.getBaseFeature().getPose();
+
+		}
+		if (feature.equals("Tool")) {
+
+			pose = featuremodel.getToolFeature().getPose();
+		}
+
+		return pose;
+
 	}
 
 	/**
@@ -258,14 +301,6 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		};
 	}
 
-	private void setDirection(ScriptWriter writer, String directionlabel, Axis axis, double speed) {
-		writer.appendLine("if(" + directionlabel + " == True):");
-		writer.appendLine(robotMotionRequester.requestScriptRobotMove(axis, speed));
-		writer.appendLine("elif(" + directionlabel + " == False):");
-		writer.appendLine(robotMotionRequester.generateScriptStopCommand());
-		writer.appendLine("end");
-	}
-
 	public MyDaemonInstallationNodeContribution getInstallation() {
 		return apiProvider.getProgramAPI().getInstallationNode(MyDaemonInstallationNodeContribution.class);
 	}
@@ -283,6 +318,15 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 			@Override
 			public void executeChanges() {
 				model.set(ASSIGMENT_CHOICE, value);
+			}
+		});
+	}
+
+	public void setSelectedFeature(final String value) {
+		undoRedoManager.recordChanges(new UndoableChanges() {
+			@Override
+			public void executeChanges() {
+				model.set(SELECTED_FEATURE, value);
 			}
 		});
 	}

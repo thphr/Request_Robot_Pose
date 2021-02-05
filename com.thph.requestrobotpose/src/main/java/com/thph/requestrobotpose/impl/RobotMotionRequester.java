@@ -95,17 +95,31 @@ public class RobotMotionRequester {
 	}
 	
 	/**
-	 * Public method for generating the complete move script command.
+	 * Public method for generating the complete move script command 
+	 * with feature pose transformation.
 	 * @param axis
 	 * @param speed
 	 * @return
 	 */
-	public String requestScriptRobotMove(Axis axis, double speed) {
+	public String requestScriptRobotMove(Axis axis, double speed, Pose feature) {
 		this.resetToolmap();
 		buildRobotMoveRequest(axis, speed);
-		String scriptCommand = generateScriptMoveCommand(ConvertToolMapToString(), getAcceleration(), getFuncionReturnTime());
+		String scriptCommand = generateTransPoseScriptMoveCommand(ConvertToolMapToString(), getAcceleration(), getFuncionReturnTime(),feature);
 		return scriptCommand;
-	}
+	}	
+
+//	/**
+//	 * Public method for generating the complete move script command.
+//	 * @param axis
+//	 * @param speed
+//	 * @return
+//	 */
+//	public String requestScriptRobotMove(Axis axis, double speed) {
+//		this.resetToolmap();
+//		buildRobotMoveRequest(axis, speed);
+//		String scriptCommand = generateScriptMoveCommand(ConvertToolMapToString(), getAcceleration(), getFuncionReturnTime());
+//		return scriptCommand;
+//	}
 	
 	/**
 	 * Method for generating the stop command for script level.
@@ -116,26 +130,48 @@ public class RobotMotionRequester {
 		return scriptCommand;
 	}
 	
+//	/**
+//	 * Method for generating the move command for script level.
+//	 * @param tool_speed
+//	 * @param acceleration
+//	 * @param time
+//	 * @return
+//	 */
+//	private String generateScriptMoveCommand(String tool_speed, double acceleration, double time) {
+//		String scriptcommand = "speedl("+ tool_speed +","+ acceleration+","+time+")";
+//		return scriptcommand;
+//	}
+	
 	/**
-	 * Method for generating the move command for script level.
+	 * Generating the move command based on the chosen feature.
 	 * @param tool_speed
 	 * @param acceleration
 	 * @param time
+	 * @param feature
 	 * @return
 	 */
-	private String generateScriptMoveCommand(String tool_speed, double acceleration, double time) {
-		String scriptcommand = "speedl("+ tool_speed +","+ acceleration+","+time+")";
-		return scriptcommand;
+	private String generateTransPoseScriptMoveCommand(String tool_speed, double acceleration, double time, Pose feature) {
+		String feature_name = "feature_rot";
+		String pose_name = "posevar";
+		String list = "pose_list";
+		
+		StringBuilder scriptCommandBuilder = new StringBuilder();
+		scriptCommandBuilder.append("local "+feature_name+" = "+feature.toString()+" "); 
+		scriptCommandBuilder.append(feature_name+"[0] = 0 ");
+		scriptCommandBuilder.append(feature_name+"[1] = 0 ");
+		scriptCommandBuilder.append(feature_name+"[2] = 0 ");
+		scriptCommandBuilder.append("local posevar = pose_trans("+feature_name+","+ "p"+tool_speed +") ");
+		scriptCommandBuilder.append("local "+list + " = [0,0,0,0,0,0] ");
+		scriptCommandBuilder.append(list+"[0] = "+ pose_name+"[0]" );
+		scriptCommandBuilder.append(list+"[1] = "+ pose_name+"[1]" );
+		scriptCommandBuilder.append(list+"[2] = "+ pose_name+"[2]" );
+		scriptCommandBuilder.append(list+"[3] = "+ pose_name+"[3]" );
+		scriptCommandBuilder.append(list+"[4] = "+ pose_name+"[4]" );
+		scriptCommandBuilder.append(list+"[5] = "+ pose_name+"[5]" );
+		scriptCommandBuilder.append("speedl(pose_list,"+ acceleration+","+time+")" );
+		
+		return scriptCommandBuilder.toString();
 	}
-//	private String generateScriptMoveCommand(String tool_speed, double acceleration, double time, Pose feature) {
-//		String feature_name = "feature_rot";
-//		String scriptCommand = "local "+feature_name+"="+feature.toString(); 
-//		scriptCommand += feature_name+"[0]=0";
-//		scriptCommand += feature_name+"[1]=0";
-//		scriptCommand += feature_name+"[2]=0";
-//		scriptCommand += "speedl(pose_trans(feature_rot,"+ tool_speed +"),"+ acceleration+","+time+")" ;
-//		return scriptCommand;
-//	}
 	
 	
 	

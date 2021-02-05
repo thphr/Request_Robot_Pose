@@ -188,8 +188,8 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 					String value = (String) arg0.getItem();
 					
-					//TODO: call the relevant feature setter method.
-
+					provider.get().setSelectedFeature(value);
+					
 				}
 			}
 		});
