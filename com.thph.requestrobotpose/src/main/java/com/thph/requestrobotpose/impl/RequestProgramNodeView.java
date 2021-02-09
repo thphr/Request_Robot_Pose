@@ -6,7 +6,6 @@ import com.ur.style.URSpacingSize;
 import com.ur.style.URTypegraphy;
 import com.ur.style.components.URButtons;
 import com.ur.style.components.URDropdowns;
-import com.ur.style.components.URSliders;
 import com.ur.style.components.URSpacing;
 import com.ur.style.components.URTextFields;
 import com.ur.test.PreviewUI;
@@ -20,6 +19,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -28,6 +28,7 @@ import org.apache.xmlrpc.XmlRpcException;
 import java.awt.Button;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -46,6 +47,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -114,12 +116,21 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 	@Override
 	public void buildUI(JPanel panel, ContributionProvider<RequestProgramNodeContribution> provider) {
+		// java - get screen size using the Toolkit class
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		// the screen height
+		int screenHeight = (int) screenSize.getHeight();
+		// the screen width
+		int screenWidth = (int) screenSize.getWidth();
+		 
 		this.setProgramnnodeViewPanel(panel);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(this.createPopup(panel, provider));
+		panel.add(this.createPopup(panel, provider,screenWidth, screenHeight));
 		panel.add(createProgramnodeview(provider));
-
+		
+ 
 	}
+	
 
 	/**
 	 * Method for activating the popup. Calls by the RequestProgramNodeConribution
@@ -129,8 +140,10 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 */
 	public void openPopopView(JPanel panel) {
 		buttonOK.getModel().setPressed(false);
-		popup.show(panel, panel.getWidth() / 4, 0);
+//		popup.show(panel, panel.getWidth() / 4, 0);
+		popup.setVisible(true);
 	}
+	
 
 	/**
 	 * create a popup on the programnode JPanel x,y(0,0).
@@ -138,7 +151,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 * @param panel
 	 * @return
 	 */
-	private Box createPopup(final JPanel panel, ContributionProvider<RequestProgramNodeContribution> provider) {
+	private Box createPopup(final JPanel panel, ContributionProvider<RequestProgramNodeContribution> provider, int x, int y) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -150,6 +163,8 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		// Calls the button handler.
 		this.handleButtonEvents(provider);
 
+		popup.setLocation(x/2,y/4);
+		
 		// add the panel with buttons to the popup.
 		popup.add(jpanel);
 
@@ -157,6 +172,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 		return box;
 	}
+	
 
 	private void addImageToButtons() {
 		this.buttonZNegative.setIcon(createImageIcon(IMAGE_ZNEGATIVE));
@@ -300,15 +316,15 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		boxY.add(buttonYPositive);
 
 		box.add(boxPopupLabel);
-		box.add(urSpacing.createVerticalSpacing(50));
+		box.add(urSpacing.createVerticalSpacing(20));
 		box.add(boxZ);
-		box.add(urSpacing.createVerticalSpacing(20));
+		box.add(urSpacing.createVerticalSpacing(10));
 		box.add(boxXNegative);
-		box.add(urSpacing.createVerticalSpacing(20));
+		box.add(urSpacing.createVerticalSpacing(10));
 		box.add(boxY);
-		box.add(urSpacing.createVerticalSpacing(20));
+		box.add(urSpacing.createVerticalSpacing(10));
 		box.add(boxXPostive);
-		box.add(urSpacing.createVerticalSpacing(50));
+		box.add(urSpacing.createVerticalSpacing(20));
 
 		return box;
 	}
@@ -350,13 +366,13 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		boxX.add(buttonRXPositive);
 
 		box.add(boxZ);
-		box.add(urSpacing.createVerticalSpacing(20));
+		box.add(urSpacing.createVerticalSpacing(10));
 		box.add(boxRYNegative);
-		box.add(urSpacing.createVerticalSpacing(20));
+		box.add(urSpacing.createVerticalSpacing(10));
 		box.add(boxX);
-		box.add(urSpacing.createVerticalSpacing(20));
+		box.add(urSpacing.createVerticalSpacing(10));
 		box.add(boxRYPostive);
-		box.add(urSpacing.createVerticalSpacing(20));
+		box.add(urSpacing.createVerticalSpacing(10));
 		box.add(boxSTOP);
 
 		return box;
