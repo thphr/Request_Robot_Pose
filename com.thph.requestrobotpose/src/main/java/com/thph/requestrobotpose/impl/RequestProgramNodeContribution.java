@@ -87,7 +87,7 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 					@Override
 					public void run() {
 						if (getInstallation().getXmlRpcDaemonInterface().isReachable()) {
-							if (!isPopupStillEnabled() || !view.popup.isVisible()) {
+							if (!isPopupStillEnabled() || !view.framePopup.isVisible()) {
 								try {
 									if (getInstallation().getXmlRpcDaemonInterface().isEnabled()) {
 										view.setTextOnShowingPopup(model.get(POPUP_TEXT, DEFAULT_POPUP_TEXT));

@@ -51,10 +51,10 @@ def setDirectionEnabled(toolspeed,enabled):
   if toolspeed == "xPositive":
     global xPositive
     xPositive = enabled
+#TPC orientation
   if toolspeed == "rzNegative":
     global rzNegative
-    zNegative = enabled
-#TPC orientation
+    rzNegative = enabled
   if toolspeed == "rzPositive":
     global rzPositive
     rzPositive = enabled

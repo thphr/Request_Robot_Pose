@@ -28,7 +28,7 @@ public class RequestProgramNodeService implements SwingProgramNodeService<Reques
 	@Override
 	public String getTitle(Locale locale) {
 	
-		return "Request Robot Pose";
+		return "Request Pose";
 	}
 
 	@Override

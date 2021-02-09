@@ -15,27 +15,20 @@ import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardTextInput;
 
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JWindow;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.apache.xmlrpc.XmlRpcException;
 
-import java.awt.Button;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -47,13 +40,11 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgramNodeContribution> {
 
-	final JPopupMenu popup = new JPopupMenu();
 	private JPanel programnnodeViewPanel;
 
 	// Initiate command sender.
@@ -68,9 +59,9 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	URSpacing urSpacing = new URSpacing();
 	URSpacingSize urSpacingSize = new URSpacingSize();
 
-	//popup panel
+	// popup panel
 	JLabel labelonPopup = new JLabel();
-	
+
 	// Create TPC position buttons
 	JButton buttonZNegative = urButtons.getSmallButtonEnabled("Z-", 100);
 	JButton buttonZPositive = urButtons.getSmallButtonEnabled("Z+", 100);
@@ -102,16 +93,27 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	JLabel assignmentLabel = new JLabel("Assign variable:");
 	JLabel equalLabel = new JLabel(":=");
 
-	//TODO: consider to change these to other than string.
+	JFrame framePopup = new JFrame("Request Pose");
+
+	int screenHeight = 0;
+	int screenWidth = 0;
+
+	int frameXLocation = 0;
+	int frameYLocation = 0;
+
+	int frameX = 0;
+	int frameY = 0;
+
+	// TODO: consider to change these to other than string.
 	String[] featureValues = { "Base", "Tool" };
-	String[] assigmentValues = { "pose","speed"};
+	String[] assigmentValues = { "pose", "speed" };
 	JComboBox featureDropdown = urDropdowns.getDropDownEnabled(100);
 	JComboBox assignmentDropdown = urDropdowns.getDropDownEnabled(100);
 
 	JTextField assignmentInput = urTextFields.getTextFieldEnabled(200);
 	JTextField popupInput = urTextFields.getTextFieldEnabled(300);
 
-	//TODO: currently unused - serve no purpose
+	// TODO: currently unused - serve no purpose
 	JButton popupButton = urButtons.getSmallButtonEnabled("OK", 50);
 
 	@Override
@@ -119,18 +121,26 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		// java - get screen size using the Toolkit class
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		// the screen height
-		int screenHeight = (int) screenSize.getHeight();
+		this.screenHeight = (int) screenSize.getHeight();
 		// the screen width
-		int screenWidth = (int) screenSize.getWidth();
-		 
+		this.screenWidth = (int) screenSize.getWidth();
+
 		this.setProgramnnodeViewPanel(panel);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(this.createPopup(panel, provider,screenWidth, screenHeight));
 		panel.add(createProgramnodeview(provider));
-		
- 
+
+		this.frameX = this.screenWidth / 5 - 30;
+		this.frameY = this.screenHeight / 2 + 100;
+
+		this.frameXLocation = screenWidth / 2 - this.frameX / 3;
+		this.frameYLocation = screenHeight / 2 - this.frameY / 2;
+
+		// Calls the button handler.
+		this.handleButtonEvents(provider);
+		//Adds item to feature dropdowns.
+		this.addItemToDropdowns(provider);
+
 	}
-	
 
 	/**
 	 * Method for activating the popup. Calls by the RequestProgramNodeConribution
@@ -140,10 +150,13 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 */
 	public void openPopopView(JPanel panel) {
 		buttonOK.getModel().setPressed(false);
-//		popup.show(panel, panel.getWidth() / 4, 0);
-		popup.setVisible(true);
+		;
+
+		this.createPopup();
+
+		framePopup.setVisible(true);
+
 	}
-	
 
 	/**
 	 * create a popup on the programnode JPanel x,y(0,0).
@@ -151,28 +164,18 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 * @param panel
 	 * @return
 	 */
-	private Box createPopup(final JPanel panel, ContributionProvider<RequestProgramNodeContribution> provider, int x, int y) {
-		Box box = Box.createHorizontalBox();
-		box.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+	private void createPopup() {
 		// Create a jpanel with a title.
-		JPanel jpanel = previewUI.AddComponentsToUI("Popup");
+		JPanel jpanel = previewUI.AddComponentsToUI("Request Pose");
 		jpanel.add(createTPCpositionButtons());
 		jpanel.add(createTCPorientationButtons());
 
-		// Calls the button handler.
-		this.handleButtonEvents(provider);
+		framePopup.setSize(this.frameX, this.frameY);
+		framePopup.setLocation(this.frameXLocation, this.frameYLocation);
 
-		popup.setLocation(x/2,y/4);
-		
-		// add the panel with buttons to the popup.
-		popup.add(jpanel);
+		this.framePopup.add(jpanel, SwingConstants.CENTER);
 
-		box.add(popup);
-
-		return box;
 	}
-	
 
 	private void addImageToButtons() {
 		this.buttonZNegative.setIcon(createImageIcon(IMAGE_ZNEGATIVE));
@@ -181,6 +184,25 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		this.buttonYPositive.setIcon(createImageIcon(IMAGE_YPOSITIVE));
 		this.buttonXNegative.setIcon(createImageIcon(IMAGE_XNEGATIVE));
 		this.buttonXPositive.setIcon(createImageIcon(IMAGE_XPOSITIVE));
+	}
+
+	private void addItemToDropdowns(final ContributionProvider<RequestProgramNodeContribution> provider) {
+		featureDropdown.setModel(new DefaultComboBoxModel<String>(featureValues));
+
+		featureDropdown.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent arg0) {
+
+				if (arg0.getStateChange() == ItemEvent.SELECTED) {
+
+					String value = (String) arg0.getItem();
+
+					provider.get().setSelectedFeature(value);
+
+				}
+			}
+		});
 	}
 
 	private Box createProgramnodeview(final ContributionProvider<RequestProgramNodeContribution> provider) {
@@ -192,24 +214,8 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		assignmentInput.setHorizontalAlignment(SwingConstants.LEFT);
 		popupInput.setHorizontalAlignment(SwingConstants.LEFT);
 
-		featureDropdown.setModel(new DefaultComboBoxModel<String>(featureValues));
 		assignmentDropdown.setModel(new DefaultComboBoxModel<String>(assigmentValues));
-		
-		featureDropdown.addItemListener(new ItemListener() {
 
-			@Override
-			public void itemStateChanged(ItemEvent arg0) {
-
-				if (arg0.getStateChange() == ItemEvent.SELECTED) {
-
-					String value = (String) arg0.getItem();
-					
-					provider.get().setSelectedFeature(value);
-					
-				}
-			}
-		});
-		
 		assignmentDropdown.addItemListener(new ItemListener() {
 
 			@Override
@@ -218,7 +224,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 				if (arg0.getStateChange() == ItemEvent.SELECTED) {
 
 					String value = (String) arg0.getItem();
-					
+
 					provider.get().setAssignmentChoiceModel(value);
 
 				}
@@ -232,7 +238,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 				keyboardInput.show(assignmentInput, provider.get().getCallbackForAssignmentInput());
 			}
 		});
-		
+
 		popupInput.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -240,19 +246,13 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 				keyboardInput.show(popupInput, provider.get().getCallbackForPopupInput());
 			}
 		});
-		
-		
 
-		Box featureBox = Box.createHorizontalBox();
-		featureBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+
 		Box assignmentBox = Box.createHorizontalBox();
 		assignmentBox.setAlignmentX(Component.LEFT_ALIGNMENT);
 		Box popupBox = Box.createHorizontalBox();
 		popupBox.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		featureBox.add(featureLabel);
-		featureBox.add(urSpacing.createHorizontalSpacing());
-		featureBox.add(featureDropdown);
 
 		assignmentBox.add(assignmentInput);
 		assignmentBox.add(urSpacing.createHorizontalSpacing());
@@ -266,8 +266,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		popupBox.add(urSpacing.createHorizontalSpacing());
 		popupBox.add(popupButton);
 
-		box.add(featureBox);
-		box.add(urSpacing.createVerticalSpacing(50));
+
 		box.add(assignmentLabel);
 		box.add(urSpacing.createVerticalSpacing(10));
 		box.add(assignmentBox);
@@ -285,11 +284,13 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	private Box createTPCpositionButtons() {
 
 		labelonPopup.setHorizontalAlignment(SwingConstants.LEFT);
-		
+
 		Box box = Box.createVerticalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
+
 		Box boxPopupLabel = Box.createHorizontalBox();
+		
+		Box featureBox = Box.createHorizontalBox();
 
 		Box boxXNegative = Box.createHorizontalBox();
 
@@ -298,8 +299,12 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		Box boxZ = Box.createHorizontalBox();
 
 		Box boxY = Box.createHorizontalBox();
-		
+
 		boxPopupLabel.add(labelonPopup);
+		
+		featureBox.add(featureLabel);
+		featureBox.add(urSpacing.createHorizontalSpacing());
+		featureBox.add(featureDropdown);
 
 		boxZ.add(buttonZPositive);
 		boxZ.add(createCustomizedHorizontalSpacing(100));
@@ -316,6 +321,8 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		boxY.add(buttonYPositive);
 
 		box.add(boxPopupLabel);
+		box.add(urSpacing.createVerticalSpacing(20));
+		box.add(featureBox);
 		box.add(urSpacing.createVerticalSpacing(20));
 		box.add(boxZ);
 		box.add(urSpacing.createVerticalSpacing(10));
@@ -418,7 +425,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 					}
 
 					provider.get().setPopupStillEnabled(false);
-					popup.setVisible(false);
+					framePopup.setVisible(false);
 				}
 
 			}
@@ -492,29 +499,28 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	private void setProgramnnodeViewPanel(JPanel programnnodeViewPanel) {
 		this.programnnodeViewPanel = programnnodeViewPanel;
 	}
-	
+
 	/**
-	 * Sets the name of the varible 
-	 * for assigning value to.
+	 * Sets the name of the varible for assigning value to.
+	 * 
 	 * @param text
 	 */
 	public void setAssignmentInputText(String text) {
 		assignmentInput.setText(text);
 	}
-	
+
 	/**
-	 * Sets the text on the input text field for 
-	 * displaying on the popup
+	 * Sets the text on the input text field for displaying on the popup
+	 * 
 	 * @param text
 	 */
 	public void setPopupInputText(String text) {
 		popupInput.setText(text);
 	}
-	
-	
+
 	/**
-	 * Sets the text on the popup during 
-	 * the program execution.
+	 * Sets the text on the popup during the program execution.
+	 * 
 	 * @param text
 	 */
 	public void setTextOnShowingPopup(String text) {
