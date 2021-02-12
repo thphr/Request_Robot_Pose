@@ -160,6 +160,7 @@ public class RobotMotionRequester {
 		scriptCommandBuilder.append(feature_name+"[0] = 0 ");
 		scriptCommandBuilder.append(feature_name+"[1] = 0 ");
 		scriptCommandBuilder.append(feature_name+"[2] = 0 ");
+		
 		scriptCommandBuilder.append("local posevar = pose_trans("+feature_name+","+ "p"+tool_speed +") ");
 		scriptCommandBuilder.append("local "+list + " = [0,0,0,0,0,0] ");
 		scriptCommandBuilder.append(list+"[0] = "+ pose_name+"[0]" );
@@ -168,6 +169,7 @@ public class RobotMotionRequester {
 		scriptCommandBuilder.append(list+"[3] = "+ pose_name+"[3]" );
 		scriptCommandBuilder.append(list+"[4] = "+ pose_name+"[4]" );
 		scriptCommandBuilder.append(list+"[5] = "+ pose_name+"[5]" );
+		
 		scriptCommandBuilder.append("speedl(pose_list,"+ acceleration+","+time+")" );
 		
 		return scriptCommandBuilder.toString();

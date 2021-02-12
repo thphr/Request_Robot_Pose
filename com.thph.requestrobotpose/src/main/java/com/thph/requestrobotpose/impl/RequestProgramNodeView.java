@@ -79,14 +79,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	JButton buttonRYPositive = urButtons.getSmallButtonEnabled("RY+", 100);
 	JButton buttonRYNegative = urButtons.getSmallButtonEnabled("RY-", 100);
 
-	// Buttoon Image path
-	private static final String IMAGE_ZNEGATIVE = "/image/positionznegative.png";
-	private static final String IMAGE_ZPOSITIVE = "/image/positionzpositive.png";
-	private static final String IMAGE_YNEGATIVE = "/image/positionynegative.png";
-	private static final String IMAGE_YPOSITIVE = "/image/positionypositive.png";
-	private static final String IMAGE_XNEGATIVE = "/image/positionxnegative.png";
-	private static final String IMAGE_XPOSITIVE = "/image/positionxpositive.png";
-
+	
 	// Program node components
 	JLabel featureLabel = new JLabel("Robot feature:");
 	JLabel popuptextLabel = new JLabel("Popup text:");
@@ -137,9 +130,41 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 		// Calls the button handler.
 		this.handleButtonEvents(provider);
-		//Adds item to feature dropdowns.
+		// Adds item to feature dropdowns.
 		this.addItemToDropdowns(provider);
 
+	}
+
+	/**
+	 * Method for retrieving the image from the
+	 * resource folder in the project.
+	 * @param isButtonDown
+	 * @param isTCPPosition
+	 * @return
+	 */
+	private String getImagePath(boolean isButtonDown, boolean isTCPPosition) {
+		String imagePath = "";
+		String buttonState = "";
+		String buttonType = "";
+		
+		
+		if (isTCPPosition) {
+			buttonType = "position";
+			
+		} else if(!isTCPPosition) {
+			buttonType = "rotation";
+		}
+
+		if (isButtonDown) {
+			buttonState = "on";
+			
+		} else if(!isButtonDown) {
+			buttonState = "off";
+		}
+
+		imagePath = ("/image/" + buttonType + "znegative_" + buttonState + ".png");
+
+		return imagePath;
 	}
 
 	/**
@@ -178,12 +203,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	}
 
 	private void addImageToButtons() {
-		this.buttonZNegative.setIcon(createImageIcon(IMAGE_ZNEGATIVE));
-		this.buttonZPositive.setIcon(createImageIcon(IMAGE_ZPOSITIVE));
-		this.buttonYNegative.setIcon(createImageIcon(IMAGE_YNEGATIVE));
-		this.buttonYPositive.setIcon(createImageIcon(IMAGE_YPOSITIVE));
-		this.buttonXNegative.setIcon(createImageIcon(IMAGE_XNEGATIVE));
-		this.buttonXPositive.setIcon(createImageIcon(IMAGE_XPOSITIVE));
+		//add images to buttons.
 	}
 
 	private void addItemToDropdowns(final ContributionProvider<RequestProgramNodeContribution> provider) {
@@ -247,12 +267,10 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 			}
 		});
 
-
 		Box assignmentBox = Box.createHorizontalBox();
 		assignmentBox.setAlignmentX(Component.LEFT_ALIGNMENT);
 		Box popupBox = Box.createHorizontalBox();
 		popupBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-
 
 		assignmentBox.add(assignmentInput);
 		assignmentBox.add(urSpacing.createHorizontalSpacing());
@@ -265,7 +283,6 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		popupBox.add(popupInput);
 		popupBox.add(urSpacing.createHorizontalSpacing());
 		popupBox.add(popupButton);
-
 
 		box.add(assignmentLabel);
 		box.add(urSpacing.createVerticalSpacing(10));
@@ -289,7 +306,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		Box boxPopupLabel = Box.createHorizontalBox();
-		
+
 		Box featureBox = Box.createHorizontalBox();
 
 		Box boxXNegative = Box.createHorizontalBox();
@@ -301,7 +318,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		Box boxY = Box.createHorizontalBox();
 
 		boxPopupLabel.add(labelonPopup);
-		
+
 		featureBox.add(featureLabel);
 		featureBox.add(urSpacing.createHorizontalSpacing());
 		featureBox.add(featureDropdown);
