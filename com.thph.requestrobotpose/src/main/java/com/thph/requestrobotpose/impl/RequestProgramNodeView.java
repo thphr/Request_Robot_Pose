@@ -24,6 +24,7 @@ import org.apache.xmlrpc.XmlRpcException;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -46,6 +47,7 @@ import javax.swing.JLabel;
 public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgramNodeContribution> {
 
 	private JPanel programnnodeViewPanel;
+	private int buttonWidth = 80;
 
 	// Initiate command sender.
 	final RobotMotionRequester robotMotionRequester = new RobotMotionRequester();
@@ -63,23 +65,22 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	JLabel labelonPopup = new JLabel();
 
 	// Create TPC position buttons
-	JButton buttonZNegative = urButtons.getSmallButtonEnabled("Z-", 100);
-	JButton buttonZPositive = urButtons.getSmallButtonEnabled("Z+", 100);
-	JButton buttonXNegative = urButtons.getSmallButtonEnabled("X-", 100);
-	JButton buttonXPositive = urButtons.getSmallButtonEnabled("X+", 100);
-	JButton buttonYPositive = urButtons.getSmallButtonEnabled("Y+", 100);
-	JButton buttonYNegative = urButtons.getSmallButtonEnabled("Y-", 100);
-	JButton buttonOK = urButtons.getSmallButtonEnabled("OK", 100);
+	JButton buttonZNegative = urButtons.getSmallButtonEnabled("Z-", buttonWidth);
+	JButton buttonZPositive = urButtons.getSmallButtonEnabled("Z+", buttonWidth);
+	JButton buttonXNegative = urButtons.getSmallButtonEnabled("X-", buttonWidth);
+	JButton buttonXPositive = urButtons.getSmallButtonEnabled("X+", buttonWidth);
+	JButton buttonYPositive = urButtons.getSmallButtonEnabled("Y+", buttonWidth);
+	JButton buttonYNegative = urButtons.getSmallButtonEnabled("Y-", buttonWidth);
+	JButton buttonOK = urButtons.getSmallButtonEnabled("OK", buttonWidth);
 
 	// Create TPC orientation buttons
-	JButton buttonRZNegative = urButtons.getSmallButtonEnabled("RZ-", 100);
-	JButton buttonRZPositive = urButtons.getSmallButtonEnabled("RZ+", 100);
-	JButton buttonRXNegative = urButtons.getSmallButtonEnabled("RX-", 100);
-	JButton buttonRXPositive = urButtons.getSmallButtonEnabled("RX+", 100);
-	JButton buttonRYPositive = urButtons.getSmallButtonEnabled("RY+", 100);
-	JButton buttonRYNegative = urButtons.getSmallButtonEnabled("RY-", 100);
+	JButton buttonRZNegative = urButtons.getSmallButtonEnabled("RZ-", buttonWidth);
+	JButton buttonRZPositive = urButtons.getSmallButtonEnabled("RZ+", buttonWidth);
+	JButton buttonRXNegative = urButtons.getSmallButtonEnabled("RX-", buttonWidth);
+	JButton buttonRXPositive = urButtons.getSmallButtonEnabled("RX+", buttonWidth);
+	JButton buttonRYPositive = urButtons.getSmallButtonEnabled("RY+", buttonWidth);
+	JButton buttonRYNegative = urButtons.getSmallButtonEnabled("RY-", buttonWidth);
 
-	
 	// Program node components
 	JLabel featureLabel = new JLabel("Robot feature:");
 	JLabel popuptextLabel = new JLabel("Popup text:");
@@ -122,7 +123,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.add(createProgramnodeview(provider));
 
-		this.frameX = this.screenWidth / 5 - 30;
+		this.frameX = this.screenWidth / 4;
 		this.frameY = this.screenHeight / 2 + 100;
 
 		this.frameXLocation = screenWidth / 2 - this.frameX / 3;
@@ -133,38 +134,63 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		// Adds item to feature dropdowns.
 		this.addItemToDropdowns(provider);
 
+		this.initiateImageToButtons();
+
 	}
 
 	/**
-	 * Method for retrieving the image from the
-	 * resource folder in the project.
+	 * Method for retrieving the image from the resource folder in the project.
+	 * 
 	 * @param isButtonDown
 	 * @param isTCPPosition
 	 * @return
 	 */
-	private String getImagePath(boolean isButtonDown, boolean isTCPPosition) {
+	private String getImagePath(boolean isButtonDown, String direction) {
 		String imagePath = "";
 		String buttonState = "";
-		String buttonType = "";
-		
-		
-		if (isTCPPosition) {
-			buttonType = "position";
-			
-		} else if(!isTCPPosition) {
-			buttonType = "rotation";
-		}
 
 		if (isButtonDown) {
 			buttonState = "on";
-			
-		} else if(!isButtonDown) {
+
+		} else if (!isButtonDown) {
 			buttonState = "off";
 		}
 
-		imagePath = ("/image/" + buttonType + "znegative_" + buttonState + ".png");
+		imagePath = ("/image/" + direction + "_" + buttonState + ".png");
 
 		return imagePath;
+	}
+
+	/**
+	 * Initiate Icon on all direction buttons.
+	 */
+	private void initiateImageToButtons() {
+		buttonXPositive.setIcon(createImageIcon(getImagePath(false, Direction.XPOSITIVE.label)));
+		buttonXNegative.setIcon(createImageIcon(getImagePath(false, Direction.XNEGATIVE.label)));
+		buttonYPositive.setIcon(createImageIcon(getImagePath(false, Direction.YPOSITIVE.label)));
+		buttonYNegative.setIcon(createImageIcon(getImagePath(false, Direction.YNEGATIVE.label)));
+		buttonZPositive.setIcon(createImageIcon(getImagePath(false, Direction.ZPOSITIVE.label)));
+		buttonZNegative.setIcon(createImageIcon(getImagePath(false, Direction.ZNEGATIVE.label)));
+
+		buttonRXPositive.setIcon(createImageIcon(getImagePath(false, Direction.RXPOSITIVE.label)));
+		buttonRXNegative.setIcon(createImageIcon(getImagePath(false, Direction.RXNEGATIVE.label)));
+		buttonRYPositive.setIcon(createImageIcon(getImagePath(false, Direction.RYPOSITIVE.label)));
+		buttonRYNegative.setIcon(createImageIcon(getImagePath(false, Direction.RYNEGATIVE.label)));
+		buttonRZPositive.setIcon(createImageIcon(getImagePath(false, Direction.RZPOSITIVE.label)));
+		buttonRZNegative.setIcon(createImageIcon(getImagePath(false, Direction.RZNEGATIVE.label)));
+
+	}
+
+	/**
+	 * Change image icon on the buttons based on button up & down.
+	 * 
+	 * @param isPressed
+	 * @param direction
+	 */
+	private void addImageToButtons(JButton button, boolean isPressed, String direction) {
+
+		button.setIcon(createImageIcon(getImagePath(isPressed, direction)));
+
 	}
 
 	/**
@@ -191,7 +217,8 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 */
 	private void createPopup() {
 		// Create a jpanel with a title.
-		JPanel jpanel = previewUI.AddComponentsToUI("Request Pose");
+//		JPanel jpanel = previewUI.AddComponentsToUI("Request Pose");
+		JPanel jpanel = new JPanel();
 		jpanel.add(createTPCpositionButtons());
 		jpanel.add(createTCPorientationButtons());
 
@@ -200,10 +227,6 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 
 		this.framePopup.add(jpanel, SwingConstants.CENTER);
 
-	}
-
-	private void addImageToButtons() {
-		//add images to buttons.
 	}
 
 	private void addItemToDropdowns(final ContributionProvider<RequestProgramNodeContribution> provider) {
@@ -300,6 +323,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 */
 	private Box createTPCpositionButtons() {
 
+		featureDropdown.setSize(new Dimension(100,44));
 		labelonPopup.setHorizontalAlignment(SwingConstants.LEFT);
 
 		Box box = Box.createVerticalBox();
@@ -385,9 +409,9 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		boxSTOP.add(createCustomizedHorizontalSpacing(200));
 		boxSTOP.add(buttonOK);
 
-		boxX.add(buttonRXNegative);
-		boxX.add(createCustomizedHorizontalSpacing(100));
 		boxX.add(buttonRXPositive);
+		boxX.add(createCustomizedHorizontalSpacing(100));
+		boxX.add(buttonRXNegative);
 
 		box.add(boxZ);
 		box.add(urSpacing.createVerticalSpacing(10));
@@ -469,6 +493,9 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 			public void stateChanged(ChangeEvent e) {
 
 				ButtonModel model = (ButtonModel) e.getSource();
+
+				// Adds image to buttons.
+				addImageToButtons(button, model.isPressed(), direction);
 
 				// TODO: without script-level --> remove the provider logic and insert:
 				// robotMotionRequester.requestRobotMove(axis, speed);

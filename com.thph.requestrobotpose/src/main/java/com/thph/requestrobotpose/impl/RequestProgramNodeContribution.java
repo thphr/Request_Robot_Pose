@@ -224,7 +224,6 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	 */
 	public KeyboardTextInput getKeyboardForAssignmentInput() {
 		KeyboardTextInput keyboardInput = keyboardFactory.createStringKeyboardInput();
-		keyboardInput.setInitialValue("Default");
 		return keyboardInput;
 	}
 
@@ -276,7 +275,6 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 	 */
 	public KeyboardTextInput getKeyboardForPopupInput() {
 		KeyboardTextInput keyboardInput = keyboardFactory.createStringKeyboardInput();
-		keyboardInput.setInitialValue("Default");
 		return keyboardInput;
 	}
 
