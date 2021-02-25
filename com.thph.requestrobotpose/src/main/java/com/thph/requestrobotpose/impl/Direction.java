@@ -5,7 +5,10 @@ import java.util.Map;
 
 public enum Direction {
 	ZNEGATIVE("zNegative"), ZPOSITIVE("zPositive"), YNEGATIVE("yNegative"), YPOSITIVE("yPositive"),
-	XNEGATIVE("xNegative"), XPOSITIVE("xPositive");
+	XNEGATIVE("xNegative"), XPOSITIVE("xPositive"),
+	
+	RZNEGATIVE("rzNegative"), RZPOSITIVE("rzPositive"), RYNEGATIVE("ryNegative"), RYPOSITIVE("ryPositive"),
+	RXNEGATIVE("rxNegative"), RXPOSITIVE("rxPositive");
 
 	public final String label;
 	private static final Map<String, Direction> LABEL = new HashMap<String, Direction>();

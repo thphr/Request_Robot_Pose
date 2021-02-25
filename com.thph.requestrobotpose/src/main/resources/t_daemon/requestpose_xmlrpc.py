@@ -11,6 +11,7 @@ from SocketServer import ThreadingMixIn
 isShowing = False
 LOCALHOST = "127.0.0.1"
 
+#TPC position
 zNegative = False
 zPositive = False
 
@@ -20,7 +21,18 @@ yPositive = False
 xNegative = False
 xPositive = False
 
+#TPC orientation
+rzNegative = False
+rzPositive = False
+
+ryNegative = False
+ryPositive = False
+
+rxNegative = False
+rxPositive = False
+
 def setDirectionEnabled(toolspeed,enabled):
+#TPC position
   if toolspeed == "zNegative":
     global zNegative
     zNegative = enabled
@@ -39,9 +51,29 @@ def setDirectionEnabled(toolspeed,enabled):
   if toolspeed == "xPositive":
     global xPositive
     xPositive = enabled
+#TPC orientation
+  if toolspeed == "rzNegative":
+    global rzNegative
+    rzNegative = enabled
+  if toolspeed == "rzPositive":
+    global rzPositive
+    rzPositive = enabled
+  if toolspeed == "ryNegative":
+    global ryNegative
+    ryNegative = enabled
+  if toolspeed == "ryPositive":
+    global ryPositive
+    ryPositive = enabled
+  if toolspeed == "rxNegative":
+    global rxNegative
+    rxNegative = enabled
+  if toolspeed == "rxPositive":
+    global rxPositive
+    rxPositive = enabled
   return True
 
 def getDirectionEnabled(toolspeed):
+#TPC position
   if toolspeed == "zNegative":
     global zNegative
     return zNegative
@@ -60,6 +92,25 @@ def getDirectionEnabled(toolspeed):
   if toolspeed == "xPositive":
     global xPositive
     return xPositive
+#TPC orientation
+  if toolspeed == "rzNegative":
+    global rzNegative
+    return rzNegative
+  if toolspeed == "rzPositive":
+    global rzPositive
+    return rzPositive
+  if toolspeed == "ryNegative":
+    global ryNegative
+    return ryNegative
+  if toolspeed == "ryPositive":
+    global ryPositive
+    return ryPositive
+  if toolspeed == "rxNegative":
+    global rxNegative
+    return rxNegative
+  if toolspeed == "rxPositive":
+    global rxPositive
+    return rxPositive
 
 def showpopup():
   global isShowing
