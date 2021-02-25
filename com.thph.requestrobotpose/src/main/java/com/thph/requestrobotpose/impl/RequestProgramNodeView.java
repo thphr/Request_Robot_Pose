@@ -99,7 +99,6 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	int frameY = 0;
 
 	// TODO: consider to change these to other than string.
-	String[] featureValues = { "Base", "Tool" };
 	String[] assigmentValues = { "pose", "speed" };
 	JComboBox featureDropdown = urDropdowns.getDropDownEnabled(100);
 	JComboBox assignmentDropdown = urDropdowns.getDropDownEnabled(100);
@@ -124,7 +123,7 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 		panel.add(createProgramnodeview(provider));
 
 		this.frameX = this.screenWidth / 4;
-		this.frameY = this.screenHeight / 2 + 100;
+		this.frameY = this.screenHeight / 2 + 120;
 
 		this.frameXLocation = screenWidth / 2 - this.frameX / 3;
 		this.frameYLocation = screenHeight / 2 - this.frameY / 2;
@@ -199,7 +198,9 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	 * 
 	 * @param panel
 	 */
-	public void openPopopView(JPanel panel) {
+	public void openPopopView(JPanel panel, String[] featurenames) {
+		
+		featureDropdown.setModel(new DefaultComboBoxModel<String>(featurenames));
 		buttonOK.getModel().setPressed(false);
 		;
 
@@ -230,7 +231,6 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 	}
 
 	private void addItemToDropdowns(final ContributionProvider<RequestProgramNodeContribution> provider) {
-		featureDropdown.setModel(new DefaultComboBoxModel<String>(featureValues));
 
 		featureDropdown.addItemListener(new ItemListener() {
 
@@ -240,6 +240,8 @@ public class RequestProgramNodeView implements SwingProgramNodeView<RequestProgr
 				if (arg0.getStateChange() == ItemEvent.SELECTED) {
 
 					String value = (String) arg0.getItem();
+					
+					System.out.println("Selected feature: " + value);
 
 					provider.get().setSelectedFeature(value);
 

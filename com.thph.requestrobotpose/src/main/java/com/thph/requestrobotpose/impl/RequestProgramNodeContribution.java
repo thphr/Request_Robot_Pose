@@ -1,9 +1,12 @@
 package com.thph.requestrobotpose.impl;
 
 import java.awt.EventQueue;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.*;
 
 import org.apache.xmlrpc.XmlRpcException;
 
@@ -15,6 +18,7 @@ import com.ur.urcap.api.contribution.program.ProgramAPIProvider;
 import com.ur.urcap.api.contribution.program.CreationContext;
 import com.ur.urcap.api.domain.ProgramAPI;
 import com.ur.urcap.api.domain.data.DataModel;
+import com.ur.urcap.api.domain.feature.Feature;
 import com.ur.urcap.api.domain.feature.FeatureModel;
 import com.ur.urcap.api.domain.script.ScriptWriter;
 import com.ur.urcap.api.domain.undoredo.UndoRedoManager;
@@ -37,6 +41,8 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 
 	private static final String DEFAULT_POPUP_TEXT = "default_popup";
 	private static final String DEFAULT_ASSIGNMENT_VARIABLE = "default_variable";
+
+	private HashMap<String, Pose> featureMap = new HashMap<String, Pose>();
 
 	private final ProgramAPI programAPI;
 	private final ProgramAPIProvider apiProvider;
@@ -78,6 +84,9 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 
 	@Override
 	public void openView() {
+		// Gets all features.
+		this.extractAllFeatures();
+
 		this.initMap();
 		uiTimer = new Timer(true);
 		uiTimer.schedule(new TimerTask() {
@@ -91,7 +100,7 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 								try {
 									if (getInstallation().getXmlRpcDaemonInterface().isEnabled()) {
 										view.setTextOnShowingPopup(model.get(POPUP_TEXT, DEFAULT_POPUP_TEXT));
-										view.openPopopView(view.getProgramnnodeViewPanel());
+										view.openPopopView(view.getProgramnnodeViewPanel(), getAllFeature());
 										setPopupStillEnabled(true);
 									}
 								} catch (XmlRpcException e) {
@@ -106,6 +115,40 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 				});
 			}
 		}, 0, 1000);
+	}
+
+	/**
+	 * Gets all feature defined in this installation and puts its name and pose into
+	 * a map.
+	 */
+	private void extractAllFeatures() {
+
+		Collection<Feature> features = featuremodel.getGeomFeatures();
+		features.add(this.featuremodel.getBaseFeature());
+		features.add(this.featuremodel.getToolFeature());
+
+		for (Feature feature : features) {
+			featureMap.put(feature.getName(), feature.getPose());
+
+		}
+
+	}
+
+	/**
+	 * Adds feature names to string array.
+	 * 
+	 * @return string array with all feature names.
+	 */
+	private String[] getAllFeature() {
+		String[] featureNames = new String[featureMap.size()];
+
+		int i = 0;
+		for (Map.Entry<String, Pose> entry : featureMap.entrySet()) {
+			featureNames[i] = entry.getKey();
+			i++;
+		}
+
+		return featureNames;
 	}
 
 	@Override
@@ -231,15 +274,7 @@ public class RequestProgramNodeContribution implements ProgramNodeContribution {
 		String feature = model.get(SELECTED_FEATURE, DEFAULT_SELECTED_FEATURE);
 		Pose pose = null;
 
-		if (feature.equals("Base")) {
-
-			pose = featuremodel.getBaseFeature().getPose();
-
-		}
-		if (feature.equals("Tool")) {
-
-			pose = featuremodel.getToolFeature().getPose();
-		}
+		pose = featureMap.get(feature);
 
 		return pose;
 
